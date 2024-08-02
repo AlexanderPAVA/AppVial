@@ -62,12 +62,12 @@ function LoginUser({ navigation }) {
   const [idPlay, setIdPlay] = useState('');
   const [msj, setMsj] = useState('');
 
-  const onToggleSwitchUno = () => {
+  const onToggleSwitchUno = (switchx) => {
     if (reten !== 'Colombia') {
       setIsSwitchOnUno(!isSwitchOnUno);
       dispatch(camaraload(!isSwitchOnUno));
       setToastServ('camara');
-      if (isSwitchOnUno === true) {
+      if (switchx === true) {
         setIsSwitchOnUno(!isSwitchOnUno);
         dispatch(camaraload(!isSwitchOnUno));
         setToastServ('camarano');
@@ -82,8 +82,8 @@ function LoginUser({ navigation }) {
       dispatch(camaraload(false));
     }
   }
-  const onToggleSwitchDos = (switch) => {
-    if (switch === true) {
+  const onToggleSwitchDos = (switchs) => {
+    if (switchs === true) {
       setIsSwitchOnDos(!isSwitchOnDos);
       dispatch(loadNoti(!isSwitchOnDos));
       setToastServ('notino');
