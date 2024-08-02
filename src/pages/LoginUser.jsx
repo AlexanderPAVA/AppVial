@@ -207,7 +207,8 @@ function LoginUser({ navigation }) {
                 veces: resp.data[0].veces,
                 deletemes: resp.data[0].deletemes,
                 rango: resp.data[0].rango,
-              }))
+              }));
+               return auth().signInWithCredential(googleCredential);
             }).catch(function (error) {
             });
           onToggleSwitchDos(!isSwitchOnDos);
@@ -240,7 +241,7 @@ function LoginUser({ navigation }) {
                       [data.idimg, data.mes],
                       (sqlTxn, res) => {
                         setEspere('');
-                        return auth().signInWithCredential(googleCredential);
+                      
                       },
                       error => {
 
