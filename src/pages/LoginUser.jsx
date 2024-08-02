@@ -234,13 +234,14 @@ function LoginUser({ navigation }) {
             }).then(response => {
               const listmsj = response.data;
               if (listmsj.length > 0) {
-                Array.isArray(listmsj) && listmsj.map((data) => {
+                Array.isArray(listmsj) && listmsj.map((data, index) => {
                   db.transaction(txn => {
                     txn.executeSql(
                       `INSERT INTO likes(idimg, mes) VALUES (?,?)`,
                       [data.idimg, data.mes],
                       (sqlTxn, res) => {
                         setEspere('');
+                        return data, index;
                       },
                       error => {
 
