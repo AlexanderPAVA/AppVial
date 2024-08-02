@@ -438,7 +438,7 @@ function LoginUser({ navigation }) {
                 marginBottom: 100
               }}>
                 <TouchableOpacity
-                  onPress={() => cargarImg(user)}
+                  onPress={() => cargarImg()}
                 >
                   <FastImage
                     source={{
