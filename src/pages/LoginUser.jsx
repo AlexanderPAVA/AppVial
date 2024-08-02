@@ -82,8 +82,8 @@ function LoginUser({ navigation }) {
       dispatch(camaraload(false));
     }
   }
-  const onToggleSwitchDos = () => {
-    if (isSwitchOnDos === true) {
+  const onToggleSwitchDos = (switch) => {
+    if (switch === true) {
       setIsSwitchOnDos(!isSwitchOnDos);
       dispatch(loadNoti(!isSwitchOnDos));
       setToastServ('notino');
