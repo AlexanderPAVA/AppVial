@@ -40,13 +40,13 @@ function ScrollImg({ item, verModalLista, ratio, winAncho }) {
                     resizeMode={FastImage.resizeMode.contain}
                 />
                 {item.formato === 'video' ?
-                    <Iconx style={{ position: 'absolute', justifyContent: 'center', alignSelf: 'center', color: 'white', top: '50%' }} name='play-circle-filled' color="white" size={60} />
+                    <Iconx style={{ position: 'absolute', justifyContent: 'center', alignSelf: 'center', color: '#fff', top: '50%' }} name='play-circle-filled' color="white" size={60} />
                     : ''
                 }
                 {item.imagendos !== '' && item.imagentres !== '' ?
-                    <Text style={{ position: 'absolute', fontSize: 11, color: 'white', marginTop: 10, marginLeft: 10, backgroundColor: 'black', borderRadius: 10, borderColor: 'gray', borderWidth: 2, }}>  1 / 3 </Text>
+                    <Text style={{ position: 'absolute', fontSize: 11, color: '#fff', marginTop: 10, marginLeft: 10, backgroundColor: '#000000', borderRadius: 10, borderColor: '#808080', borderWidth: 2, }}>  1 / 3 </Text>
                     : item.imagendos !== '' ?
-                        <Text style={{ position: 'absolute', fontSize: 11, color: 'white', marginTop: 10, marginLeft: 10, backgroundColor: 'black', borderRadius: 10, borderColor: 'gray', borderWidth: 2, }}>  1 / 2 </Text>
+                        <Text style={{ position: 'absolute', fontSize: 11, color: '#fff', marginTop: 10, marginLeft: 10, backgroundColor: '#000000', borderRadius: 10, borderColor: '#808080', borderWidth: 2, }}>  1 / 2 </Text>
                         :
                         ''
                 }
@@ -72,9 +72,9 @@ function ScrollImg({ item, verModalLista, ratio, winAncho }) {
                             resizeMode={FastImage.resizeMode.contain}
                         />
                         {item.imagentres !== '' ?
-                            <Text style={{ position: 'absolute', fontSize: 11, color: 'white', marginTop: 10, marginLeft: 10, backgroundColor: 'black', borderRadius: 10, borderColor: 'gray', borderWidth: 2, }}>  2 / 3 </Text>
+                            <Text style={{ position: 'absolute', fontSize: 11, color: '#fff', marginTop: 10, marginLeft: 10, backgroundColor: '#000000', borderRadius: 10, borderColor: '#808080', borderWidth: 2, }}>  2 / 3 </Text>
                             :
-                            <Text style={{ position: 'absolute', fontSize: 11, color: 'white', marginTop: 10, marginLeft: 10, backgroundColor: 'black', borderRadius: 10, borderColor: 'gray', borderWidth: 2, }}>  2 / 2 </Text>
+                            <Text style={{ position: 'absolute', fontSize: 11, color: '#fff', marginTop: 10, marginLeft: 10, backgroundColor: '#000000', borderRadius: 10, borderColor: '#808080', borderWidth: 2, }}>  2 / 2 </Text>
                         }
                     </TouchableOpacity>
                     : ''
@@ -99,7 +99,7 @@ function ScrollImg({ item, verModalLista, ratio, winAncho }) {
                             }}
                             resizeMode={FastImage.resizeMode.contain}
                         />
-                        <Text style={{ position: 'absolute', fontSize: 11, color: 'white', marginTop: 10, marginLeft: 10, backgroundColor: 'black', borderRadius: 10, borderColor: 'gray', borderWidth: 2, }}>  3 / 3 </Text>
+                        <Text style={{ position: 'absolute', fontSize: 11, color: '#fff', marginTop: 10, marginLeft: 10, backgroundColor: '#000000', borderRadius: 10, borderColor: '#808080', borderWidth: 2, }}>  3 / 3 </Text>
                     </TouchableOpacity>
                     : ''
             }
