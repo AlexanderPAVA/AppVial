@@ -26,12 +26,12 @@ import { openDatabase } from "react-native-sqlite-storage";
 import ModalView from '../components/ModalView';
 import ModalConfig from '../texto/ModalConfig.json'
 import config from '../config';
-import ProAlert from '../components/ProAlert';
 import UserLogin from '../components/UserLogin';
 import { loadsancion } from '../redux/slices/sancion';
 import Iconc from 'react-native-vector-icons/Entypo';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import ModalNombre from '../components/ModalNombre';
+import AlertPro from 'react-native-alert-pro';
 
 const GOOGLE_KEY = config.GOOGLE_KEY;
 const RUTA_IMG_USER = config.RUTA_IMG_USER;
@@ -157,13 +157,13 @@ function LoginUser({ navigation }) {
             </TouchableOpacity>
             :
             <Text style={{
-              color: 'white',
+              color: '#fff',
               fontSize: 16,
               fontWeight: 'bold',
             }}>Configuración</Text>
           :
           <Text style={{
-            color: 'white',
+            color: '#fff',
             fontSize: 16,
             fontWeight: 'bold',
           }}>Configuración</Text>
@@ -173,7 +173,7 @@ function LoginUser({ navigation }) {
   }, [user]);
 
   const logIn = () => {
-    this.AlertPro.open()
+    this.AlertPro.open();
     setMsj('¿Estás de acuerdo con nuestras condiciones de uso?');
   };
   const signInOut = async () => {
@@ -212,6 +212,7 @@ function LoginUser({ navigation }) {
             }).catch(function (error) {
             });
           onToggleSwitchDos(!isSwitchOnDos);
+          setEspere('');
           setTimeout(() => {
             setToastServ('cargaFotoUser');
           }, 5000);
@@ -229,7 +230,7 @@ function LoginUser({ navigation }) {
               );
             });
 
-           axios.post(RUTA_LOGIN_DOS, {
+            axios.post(RUTA_LOGIN_DOS, {
               emailu: user.email
             }).then(response => {
               const listmsj = response.data;
@@ -322,7 +323,7 @@ function LoginUser({ navigation }) {
   }
 
   const logOut = () => {
-    this.AlertPro.open()
+    this.AlertPro.open();
     setMsj('Al eliminar este registro quedas sin acceso a varias funciones.');
   };
 
@@ -471,13 +472,13 @@ function LoginUser({ navigation }) {
 
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => cambiarNombre()}>
-                  <Text style={{ color: 'white', marginTop: 20, alignSelf: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 15 }}>{user.nombre}</Text>
+                  <Text style={{ color: '#fff', marginTop: 20, alignSelf: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 15 }}>{user.nombre}</Text>
                 </TouchableOpacity>
 
                 <Text style={{ color: '#FCB213', marginTop: 0, alignSelf: 'center', justifyContent: 'center', fontSize: 10 }}>{user.email}</Text>
                 <Button mode="contained" onPress={() => logOut()}
                   style={{
-                    backgroundColor: 'brown',
+                    backgroundColor: '#FF0000',
                     marginHorizontal: 36,
                     borderRadius: 20,
                     borderColor: '#FCB213',
@@ -494,7 +495,7 @@ function LoginUser({ navigation }) {
                   paddingHorizontal: 40,
                   marginTop: 50
                 }}>
-                  <Text style={{ color: 'white' }}>Abrir App en Cámara</Text>
+                  <Text style={{ color: '#fff' }}>Abrir App en Cámara</Text>
                   <Switch value={isSwitchOnUno} onValueChange={() => onToggleSwitchUno(isSwitchOnUno)} />
                 </View>
                 <View style={{
@@ -505,7 +506,7 @@ function LoginUser({ navigation }) {
                   marginTop: 35,
                   marginBottom: 30
                 }}>
-                  <Text style={{ color: 'white' }}>Recibir Notificaciones</Text>
+                  <Text style={{ color: '#fff' }}>Recibir Notificaciones</Text>
                   <Switch value={isSwitchOnDos} onValueChange={() => onToggleSwitchDos(isSwitchOnDos)} />
                 </View>
 
@@ -526,7 +527,7 @@ function LoginUser({ navigation }) {
                             alignSelf: 'center',
                             justifyContent: 'center',
                             fontSize: 10,
-                            color: 'white',
+                            color: '#fff',
                             padding: 5
                           }}>Sanciones:  {sancion.veces}       Faltan:  {sancion.tiempoRestante}   días </Text>
                         </View>
@@ -544,7 +545,7 @@ function LoginUser({ navigation }) {
                             }}>Sanciones </Text>
                             <Text style={{
                               fontSize: 13,
-                              color: 'white',
+                              color: '#fff',
                               padding: 5
                             }}>  {sancion.veces}</Text>
                           </View>
@@ -554,14 +555,14 @@ function LoginUser({ navigation }) {
                               alignSelf: 'center',
                               justifyContent: 'center',
                               fontSize: 13,
-                              color: 'red',
+                              color: '#FF0000',
                               padding: 5
                             }}>Cuenta Bloqueada</Text>
                             <Text style={{
                               alignSelf: 'center',
                               justifyContent: 'center',
                               fontSize: 11,
-                              color: 'white',
+                              color: '#fff',
                               padding: 5
                             }}>Sanciones:  {sancion.veces}</Text>
                           </View>
@@ -653,11 +654,51 @@ function LoginUser({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        <ProAlert
-          cargar={signInOut}
-          noCargar={noPoliticas}
-          titulo={msj}
+
+
+<AlertPro
+          ref={ref2 => {
+            this.AlertPro = ref2;
+          }}
+          onConfirm={() => signInOut()}
+          onCancel={() => noPoliticas()}
+          title={msj}
+          message=""
+        textCancel="NO"
+        textConfirm="SI"
+        customStyles={{
+          mask: {
+            backgroundColor: 'rgba(0, 0, 0, 1)'
+          },
+          container: {
+            borderWidth: 3,
+            borderRadius: 15,
+            borderColor: "#FFBB21",
+            shadowColor: "#000000",
+            shadowOpacity: 0.2,
+            shadowRadius: 10
+          },
+          buttonCancel: {
+            backgroundColor: "#DF0000",
+            marginHorizontal: 20,
+            height: 50
+          },
+          buttonConfirm: {
+            backgroundColor: "#007A09",
+            marginHorizontal: 20,
+          },
+          title: {
+            fontSize: 19,
+          },
+          textCancel: {
+            marginTop: 3
+          },
+          textConfirm: {
+            marginTop: 3
+          }
+          }}
         />
+
       </SafeAreaView>
       <ToastServicios dato={ToastServ} />
     </>
