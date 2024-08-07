@@ -55,7 +55,7 @@ function Camara({ route, navigation }) {
   const [verificarFoto, setVerificarFoto] = useState('');
   const [fotoSize, setFotoSize] = useState('');
   const [codigo, setCodigo] = useState('');
-  const [ToastServ, setToastServ] = useState('');
+  const [toastServ, setToastServ] = useState('');
   const [frase, onChangeFrase] = useState('');
   const [zona, onChangeZona] = useState('');
   const [msj, setMsj] = useState('');
@@ -1316,7 +1316,7 @@ function Camara({ route, navigation }) {
           </View>
         </ScrollView>
       </SafeAreaView>
-      <ToastServicios dato={ToastServ} />
+      <ToastServicios dato={toastServ} />
     </>
   )
 }
