@@ -96,7 +96,7 @@ function ModalNombre({ modalVisibles, setModalVisibles }) {
                             onChangeText={onChangeNombre}
                             value={nombre}
                             placeholder="25 caracteres max."
-                            textColor="black"
+                            textColor="#000000"
                             maxLength={25}
                             borderColor='#FCB213'
                             borderWidth={2}
@@ -107,10 +107,10 @@ function ModalNombre({ modalVisibles, setModalVisibles }) {
                             flexDirection: 'row',
                         }}>
                             <TouchableOpacity onPress={() => salir()} style={styles.closeModalButton3}>
-                                <Text style={{ color: 'black', marginTop: 5, fontWeight: 'bold', color: 'red' }}>   Salir    </Text>
+                                <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#FF0000' }}>   Salir    </Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => cambiar()} style={styles.closeModalButton2}>
-                                <Text style={{ color: 'black', marginTop: 5, fontWeight: 'bold', color: 'green' }}>  Cambiar  </Text>
+                                <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#064B00' }}>  Cambiar  </Text>
                             </TouchableOpacity>
                         </View>
 
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalContent: {
-        backgroundColor: 'white',
+        backgroundColor: '#fff',
         width: '75%', // Ocupa el 80% del ancho de la pantalla
         borderRadius: 10,
         padding: 30,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
         height: 40,
         marginTop: 20,
         textAlign: 'center',
-        color: 'green',
+        color: '#064B00',
         borderWidth: 2,
         borderRadius: 10,
         marginLeft: 20
@@ -165,14 +165,14 @@ const styles = StyleSheet.create({
     label: {
         margin: 8,
         fontSize: 17,
-        color: 'brown',
+        color: '#964B00',
         textAlign: 'center',
         fontWeight: 'bold',
     },
     label2: {
         margin: 0,
         fontSize: 11,
-        color: 'black',
+        color: '#000000',
         textAlign: 'center',
     },
     label3: {
