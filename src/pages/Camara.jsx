@@ -31,9 +31,9 @@ import config from '../config';
 import { loadsancion } from '../redux/slices/sancion';
 import { Notificaciones } from '../components/Notificaciones';
 import { NotificacionesDos } from '../components/NotificacionesDos';
-import ProAlert from '../components/ProAlert';
 import ModalCamara from '../components/ModalCamara';
 import { notiContext } from '../context/notiContext';
+import AlertPro from 'react-native-alert-pro';
 
 const MAPA_KEY = config.API_KEY_MAPS;
 const RUTA_CAM_UNO = config.RUTA_CAM_UNO;
@@ -107,7 +107,7 @@ function Camara({ route, navigation }) {
       headerTintColor: '#fff',
       headerRight: () => (
         <Text style={{
-          color: 'white',
+          color: '#fff',
           fontSize: 16,
           fontWeight: 'bold',
         }}>Cámara</Text>
@@ -767,14 +767,14 @@ function Camara({ route, navigation }) {
               }} />
               {enterNoti !== 0 ?
                 <Text style={{
-                  color: 'white',
+                  color: '#fff',
                   fontSize: 15,
                 }} >
                   Cargando Notificación
                 </Text>
                 :
                 <Text style={{
-                  color: 'white',
+                  color: '#fff',
                   fontSize: 20,
                 }} >
                   Cargando Gps
@@ -783,7 +783,7 @@ function Camara({ route, navigation }) {
               {msj2 === '' ?
 
                 <Text style={{
-                  color: 'white',
+                  color: '#fff',
                   fontSize: 16,
                   marginLeft: 5
                 }} >
@@ -791,7 +791,7 @@ function Camara({ route, navigation }) {
                 </Text>
                 :
                 <Text style={{
-                  color: 'white',
+                  color: '#fff',
                   fontSize: 20,
                   marginLeft: 5
                 }} >
@@ -826,7 +826,7 @@ function Camara({ route, navigation }) {
                         overlayColor='rgba(0, 0, 0, 1)'
                         textContent={msjCamIni}
                         textStyle={{
-                          color: 'white',
+                          color: '#fff',
                           fontSize: 15,
                           marginTop: -30
                         }}
@@ -848,7 +848,7 @@ function Camara({ route, navigation }) {
                         <View>
                           {verificarFoto === '' ?
                             <Text style={{
-                              color: 'white',
+                              color: '#fff',
                               justifyContent: 'center',
                               alignSelf: 'center', marginBottom: 50, fontSize: 11
                             }}>Toca para cargar imagen</Text>
@@ -893,7 +893,7 @@ function Camara({ route, navigation }) {
                                 <Text style={{
                                   justifyContent: 'center',
                                   alignSelf: 'center',
-                                  color: 'white',
+                                  color: '#fff',
                                   fontSize: 15,
                                   marginTop: 10
                                 }}
@@ -927,7 +927,7 @@ function Camara({ route, navigation }) {
                           onChangeText={onChangeFrase}
                           value={frase}
                           placeholder="Ingrese comentario corto"
-                          textColor="black"
+                          textColor="#000000"
                           maxLength={250}
                           borderColor='#FCB213'
                           borderWidth={2}
@@ -970,7 +970,7 @@ function Camara({ route, navigation }) {
                                   fontSize: 11,
                                   position: 'absolute',
                                   marginTop: 30,
-                                  color: 'white'
+                                  color: '#fff'
                                 }}>Accidente</Text>
                               </View>
                             </View>
@@ -995,7 +995,7 @@ function Camara({ route, navigation }) {
                                   fontSize: 11,
                                   position: 'absolute',
                                   marginTop: 30,
-                                  color: 'white'
+                                  color: '#fff'
                                 }}>Retén</Text>
                               </View>
                             </View>
@@ -1022,7 +1022,7 @@ function Camara({ route, navigation }) {
                                   fontSize: 11,
                                   position: 'absolute',
                                   marginTop: 30,
-                                  color: 'white'
+                                  color: '#fff'
 
                                 }}>Evento Vial</Text>
                               </View>
@@ -1032,8 +1032,8 @@ function Camara({ route, navigation }) {
                         {
                           brujula2 === 'Baja' &&
                           <>
-                            <Text style={{ color: 'white', textAlign: 'center', fontSize: 10, marginTop: 5 }}>Precisión del GPS: <Text style={{ fontWeight: 'bold', fontSize: 13 }}> {brujula2}</Text></Text>
-                            <Text style={{ color: 'white', textAlign: 'center', fontSize: 10 }}>Cargue comentario de donde está ubicado</Text>
+                            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10, marginTop: 5 }}>Precisión del GPS: <Text style={{ fontWeight: 'bold', fontSize: 13 }}> {brujula2}</Text></Text>
+                            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10 }}>Cargue comentario de donde está ubicado</Text>
                           </>
                         }
                       </View>
@@ -1043,11 +1043,52 @@ function Camara({ route, navigation }) {
                   </View>
                 </View>
 
-                <ProAlert
-                  cargar={cargarOtra}
-                  noCargar={noCargar}
-                  titulo={msj}
+
+                <AlertPro
+                  ref={ref3 => {
+                    this.AlertPro = ref3;
+                  }}
+                  onConfirm={() => cargarOtra()}
+                  onCancel={() => noCargar()}
+                  title={msj}
+                  message=""
+                  textCancel="NO"
+                  textConfirm="SI"
+                  customStyles={{
+                    mask: {
+                      backgroundColor: 'rgba(0, 0, 0, 1)'
+                    },
+                    container: {
+                      borderWidth: 3,
+                      borderRadius: 15,
+                      borderColor: "#FFBB21",
+                      shadowColor: "#000000",
+                      shadowOpacity: 0.2,
+                      shadowRadius: 10
+                    },
+                    buttonCancel: {
+                      backgroundColor: "#DF0000",
+                      marginHorizontal: 20,
+                      height: 50
+                    },
+                    buttonConfirm: {
+                      backgroundColor: "#007A09",
+                      marginHorizontal: 20,
+                    },
+                    title: {
+                      fontSize: 19,
+                    },
+                    textCancel: {
+                      marginTop: 3
+                    },
+                    textConfirm: {
+                      marginTop: 3
+                    }
+                  }}
                 />
+
+
+
               </>
               : fotoVideo === 2 ?
                 loadVideo === 0 ?
@@ -1123,7 +1164,7 @@ function Camara({ route, navigation }) {
                       <View style={styles.input2} >
                         {zona !== '' &&
                           <Text style={{
-                            color: 'white',
+                            color: '#fff',
                             fontSize: 11,
                             marginRight: 15,
                             marginLeft: 15,
@@ -1143,7 +1184,7 @@ function Camara({ route, navigation }) {
                         onChangeText={onChangeFrase}
                         value={frase}
                         placeholder="Ingrese comentario corto"
-                        textColor="black"
+                        textColor="#000000"
                         maxLength={250}
                         borderColor='#FCB213'
                         borderWidth={2}
@@ -1180,7 +1221,7 @@ function Camara({ route, navigation }) {
                                   fontSize: 11,
                                   position: 'absolute',
                                   marginTop: 30,
-                                  color: 'white'
+                                  color: '#fff'
                                 }}>Accidente</Text>
                               </View>
                             </View>
@@ -1205,7 +1246,7 @@ function Camara({ route, navigation }) {
                                   fontSize: 11,
                                   position: 'absolute',
                                   marginTop: 30,
-                                  color: 'white'
+                                  color: '#fff'
                                 }}>Retén</Text>
                               </View>
                             </View>
@@ -1232,7 +1273,7 @@ function Camara({ route, navigation }) {
                                   fontSize: 11,
                                   position: 'absolute',
                                   marginTop: 30,
-                                  color: 'white'
+                                  color: '#fff'
 
                                 }}>Evento Vial</Text>
                               </View>
@@ -1242,8 +1283,8 @@ function Camara({ route, navigation }) {
                         {
                           brujula2 === 'Baja' &&
                           <>
-                            <Text style={{ color: 'white', textAlign: 'center', fontSize: 10, marginTop: 5 }}>Precisión del GPS: <Text style={{ fontWeight: 'bold', fontSize: 13 }}> {brujula2}</Text></Text>
-                            <Text style={{ color: 'white', textAlign: 'center', fontSize: 10 }}>Cargue comentario de donde está ubicado</Text>
+                            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10, marginTop: 5 }}>Precisión del GPS: <Text style={{ fontWeight: 'bold', fontSize: 13 }}> {brujula2}</Text></Text>
+                            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10 }}>Cargue comentario de donde está ubicado</Text>
                           </>
                         }
                       </View>
@@ -1265,7 +1306,7 @@ function Camara({ route, navigation }) {
               animationType="fade"
             >
               <Dialog.Title title={titleDialogo} />
-              <Text style={{ color: 'black' }}>{msj2}</Text>
+              <Text style={{ color: '#000000' }}>{msj2}</Text>
               {fotoVideo === 0 &&
                 <Dialog.Actions>
                   <Dialog.Button title="SALIR" onPress={() => sancionado()} />
@@ -1323,6 +1364,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 9,
     marginTop: 3,
-    color: 'white'
+    color: '#fff'
   }
 });
