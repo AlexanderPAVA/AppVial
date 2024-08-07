@@ -5,7 +5,7 @@ function AlertaPro({quitar, cancel}) {
   return (
     <AlertPro
         ref={ref => {
-          this.AlertPro = ref;
+          AlertPro = ref;
         }}
         onConfirm={() => quitar()}
         onCancel={() => cancel()}
