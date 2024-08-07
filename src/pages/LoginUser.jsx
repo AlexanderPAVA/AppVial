@@ -110,12 +110,10 @@ function LoginUser({ navigation }) {
 
   const titulo = () => {
     return (
-      <>
         <Text style={{
           fontSize: 1,
           color: '#000000',
         }}></Text>
-      </>
     )
   };
 
