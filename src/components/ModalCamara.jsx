@@ -14,16 +14,16 @@ function ModalCamara({ modalVisible, tomarVideo, tomarFoto, salirModal, brujula2
   setUpdateIntervalForType(SensorTypes.magnetometer, 5000);
 
   const [calibracionGps, setCalibracionGps] = useState(brujula2);
-  const [color, setcolor] = useState('#000');
+  const [color, setColor] = useState('#000');
 
   useEffect(() => {
     if (calibracionGps !== 'unknown') {
       if (calibracionGps === 'Buena') {
-        setcolor('#064B00');
+        setColor('#064B00');
       } else if (calibracionGps === 'Regular') {
-        setcolor('#FFA500');
+        setColor('#FFA500');
       } else {
-        setcolor('#FF0000');
+        setColor('#FF0000');
       };
     } else {
       calibrar();
@@ -46,13 +46,13 @@ function ModalCamara({ modalVisible, tomarVideo, tomarFoto, salirModal, brujula2
   const determineAccuracy = (data) => {
     const strength = calculateMagnetometerStrength(data);
     if (strength >= 30 && strength <= 60) {
-      setcolor('#064B00');// verde
+      setColor('#064B00');// verde
       return 'Buena';
     } else if ((strength >= 20 && strength < 30) || (strength > 60 && strength <= 70)) {
-      setcolor('#FFA500');// naranja
+      setColor('#FFA500');// naranja
       return 'Regular';
     } else {
-      setcolor('#FF0000');// rojo
+      setColor('#FF0000');// rojo
       return 'Baja';
     }
   };
