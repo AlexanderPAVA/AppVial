@@ -58,7 +58,7 @@ function Home({ navigation }) {
   const [msjCam, setMsjCam] = useState('');
   const [bloqueoButtons, setBloqueoButtons] = useState(false);
   const [compassAccuracy, setCompassAccuracy] = useState('unknown');
-  const [color, setcolor] = useState('');
+  const [color, setcolor] = useState('#000');
   const [pais, setPais] = useState('');
   const [mostrarsinpais, setmostrarsinpais] = useState(0);
 
@@ -96,13 +96,13 @@ function Home({ navigation }) {
   const determineAccuracy = (data) => {
     const strength = calculateMagnetometerStrength(data);
     if (strength >= 30 && strength <= 60) {
-      setcolor('green');
+      setcolor('#064B00');
       return 'Buena';
     } else if ((strength >= 20 && strength < 30) || (strength > 60 && strength <= 70)) {
-      setcolor('orange');
+      setcolor('#FFA500');
       return 'Regular';
     } else {
-      setcolor('red');
+      setcolor('#FF0000');
       return 'Baja';
     }
   };
@@ -700,12 +700,12 @@ function Home({ navigation }) {
                 <>
                   <Text style={styles.depto}>{reten}</Text>
                   {conex !== 0 && reten !== null && bloqueoButtons === false &&
-                    <Text style={{ color: 'White', textAlign: 'center', fontSize: 10, marginBottom: -20 }}>Precisión del GPS:  <Text style={{ color: color, textAlign: 'center', fontWeight: 'bold', fontSize: 11 }}>{compassAccuracy}</Text></Text>
+                    <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10, marginBottom: -20 }}>Precisión del GPS:  <Text style={{ color: color, textAlign: 'center', fontWeight: 'bold', fontSize: 11 }}>{compassAccuracy}</Text></Text>
                   }
                 </>
                 : reten === 'Colombia' && pais !== 'Colombia' && mostrarsinpais === 0 ?
                   <Text style={styles.sindepto}>
-                    <Text style={{ color: 'gray' }}>Te encuentras en</Text>{'\n'}<Text style={{ color: '#FCB213' }}>{pais}</Text>
+                    <Text style={{ color: '#808080' }}>Te encuentras en</Text>{'\n'}<Text style={{ color: '#FCB213' }}>{pais}</Text>
                   </Text>
                   : pais === 'Colombia' ?
                     <Text style={styles.sindepto2}>
@@ -774,7 +774,7 @@ function Home({ navigation }) {
         conex === 0 || positionIni === 0 ?
           <View>
             <TouchableOpacity onPress={() => setReload(reload + 1)}>
-              <Icon name='reload-circle-outline' color="white" size={35} style={{ alignSelf: 'center', justifyContent: 'center' }} />
+              <Icon name='reload-circle-outline' color="#fff" size={35} style={{ alignSelf: 'center', justifyContent: 'center' }} />
               <Text style={styles.recargahome}> Recargar </Text>
             </TouchableOpacity>
           </View>
@@ -976,7 +976,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontSize: 10,
     fontFamily: 'Arial',
-    color: 'gray',
+    color: '#808080',
     fontWeight: 'bold'
   },
   opencam: {
@@ -1009,7 +1009,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontSize: 12,
     fontFamily: 'Arial',
-    color: 'gray',
+    color: '#808080',
     fontWeight: 'bold',
     top: '95%'
   },
