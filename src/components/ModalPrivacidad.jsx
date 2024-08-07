@@ -126,7 +126,7 @@ function ModalPrivacidad({ modalVisiblePVez, setModalVisiblePVez }) {
                                     marginBottom: 30
                                 }}>
                                     <TouchableOpacity onPress={() => enter()} style={styles.aceptopoliticas}>
-                                        <Text style={{ top: 10, fontWeight: 'bold', color: 'white', fontSize: 11, textAlign: 'center' }} >   ACEPTO LAS POLITICAS DE PRIVACIDAD   </Text>
+                                        <Text style={{ top: 10, fontWeight: 'bold', color: '#fff', fontSize: 11, textAlign: 'center' }} >   ACEPTO LAS POLITICAS DE PRIVACIDAD   </Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -151,7 +151,7 @@ function ModalPrivacidad({ modalVisiblePVez, setModalVisiblePVez }) {
                     animationType="fade"
                 >
                     <Dialog.Title title="Permiso de Notificaciones" />
-                    <Text style={{ color: 'black', textAlign: 'justify' }}>¿Acepta que YoReporto habilite las notificaciones?</Text>
+                    <Text style={{ color: '#000000', textAlign: 'justify' }}>¿Acepta que YoReporto habilite las notificaciones?</Text>
                     <Dialog.Actions>
                         <Dialog.Button  title="ACEPTAR" onPress={() => checkPermission()} />
                         <Dialog.Button  title="DESPUES" onPress={() => salirdos()} />
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     aceptopoliticas: {
         backgroundColor: '#064B00',
         height: 45,
-        color: 'brown',
+        color: '#964B00',
         borderWidth: 3,
         borderRadius: 10,
         borderColor: '#000',
