@@ -229,28 +229,29 @@ function LoginUser({ navigation }) {
               );
             });
 
-            axios.post(RUTA_LOGIN_DOS, {
+           axios.post(RUTA_LOGIN_DOS, {
               emailu: user.email
             }).then(response => {
               const listmsj = response.data;
               if (listmsj.length > 0) {
-                Array.isArray(listmsj) && listmsj.map((data, index) => {
-                  db.transaction(txn => {
-                    txn.executeSql(
-                      `INSERT INTO likes(idimg, mes) VALUES (?,?)`,
-                      [data.idimg, data.mes],
-                      (sqlTxn, res) => {
-                        setEspere('');
-                        return data, index;
-                      },
-                      error => {
-
-                      },
-                    )
-                  })
+                const datos = Array.isArray(listmsj) && listmsj.map((data, index) => {
+                  return data;
                 });
-              }
-            })
+                const idimg1 = datos[0].idimg;
+                const mes1 = datos[0].mes;
+                db.transaction(txn => {
+                  txn.executeSql(
+                    `INSERT INTO likes(idimg, mes) VALUES (?,?)`,
+                    [idimg1, mes1],
+                    (sqlTxn, res) => {
+                      //console.log('carga OK')
+                    },
+                    error => {
+                    },
+                  )
+                });
+              };
+            });
           }, 1000);
         }).catch(function (error) {
 
