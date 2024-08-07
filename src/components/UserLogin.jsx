@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         bottom: 80
     },
     textregistro: {
-        color: 'white',
+        color: '#fff',
         bottom: 30,
         justifyContent: "center",
         alignSelf: 'center',
