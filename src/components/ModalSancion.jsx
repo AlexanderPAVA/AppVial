@@ -92,14 +92,14 @@ function ModalSancion({ modalVisible4, setModalVisible4, borrar, playId, navigat
                             flexDirection: 'row',
                         }}>
                             <TouchableOpacity onPress={() => quitar(0)} style={styles.closeModalButton3}>
-                                <Text style={{ color: 'black', marginTop: 5, fontWeight: 'bold', color: 'red' }}>    NO    </Text>
+                                <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#FF0000' }}>    NO    </Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => quitar(1)} style={styles.closeModalButton2}>
-                                <Text style={{ color: 'black', marginTop: 5, fontWeight: 'bold', color: 'green' }}>     SI     </Text>
+                                <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#064B00' }}>     SI     </Text>
                             </TouchableOpacity>
                         </View>
                         <TouchableOpacity onPress={() => salir()} style={styles.closeModalButton}>
-                            <Text style={{ color: 'black', marginTop: 5, fontWeight: 'bold', color: 'black' }} >     SALIR     </Text>
+                            <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#000000' }} >     SALIR     </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalContent: {
-        backgroundColor: 'white',
+        backgroundColor: '#fff',
         width: '70%', // Ocupa el 80% del ancho de la pantalla
         borderRadius: 10,
         padding: 30,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
         height: 40,
         marginTop: 30,
         textAlign: 'center',
-        color: 'black',
+        color: '#000000',
         borderWidth: 2,
         borderRadius: 10,
         marginRight: 0
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         height: 40,
         marginTop: 20,
         textAlign: 'center',
-        color: 'green',
+        color: '#064B00',
         borderWidth: 2,
         borderRadius: 10,
         marginLeft: 20
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     label: {
         margin: 8,
         fontSize: 17,
-        color: 'black',
+        color: '#000000',
         textAlign: 'center',
         fontWeight: 'bold',
 
