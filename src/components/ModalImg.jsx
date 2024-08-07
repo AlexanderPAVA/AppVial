@@ -46,7 +46,7 @@ function ModalImg({ modalVisible, setModalVisible, anchoPantalla, altoModal, rat
               style={styles.buttonDos}
               onPress={() => setModalVisible(false)}
             >
-              <Iconm name='close' color="white" size={25} />
+              <Iconm name='close' color="#fff" size={25} />
             </TouchableOpacity>
           </View>
         </Modal>
