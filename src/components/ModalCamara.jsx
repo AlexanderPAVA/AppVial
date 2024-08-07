@@ -14,16 +14,16 @@ function ModalCamara({ modalVisible, tomarVideo, tomarFoto, salirModal, brujula2
   setUpdateIntervalForType(SensorTypes.magnetometer, 5000);
 
   const [calibracionGps, setCalibracionGps] = useState(brujula2);
-  const [color, setColor] = useState('#000');
+  const [colors, setColors] = useState('#000');
 
   useEffect(() => {
     if (calibracionGps !== 'unknown') {
       if (calibracionGps === 'Buena') {
-        setColor('#064B00');
+        setColors('#064B00');
       } else if (calibracionGps === 'Regular') {
-        setColor('#FFA500');
+        setColors('#FFA500');
       } else {
-        setColor('#FF0000');
+        setColors('#FF0000');
       };
     } else {
       calibrar();
@@ -46,13 +46,13 @@ function ModalCamara({ modalVisible, tomarVideo, tomarFoto, salirModal, brujula2
   const determineAccuracy = (data) => {
     const strength = calculateMagnetometerStrength(data);
     if (strength >= 30 && strength <= 60) {
-      setColor('#064B00');// verde
+      setColors('#064B00');
       return 'Buena';
     } else if ((strength >= 20 && strength < 30) || (strength > 60 && strength <= 70)) {
-      setColor('#FFA500');// naranja
+      setColors('#FFA500');
       return 'Regular';
     } else {
-      setColor('#FF0000');// rojo
+      setColors('#FF0000');
       return 'Baja';
     }
   };
@@ -78,7 +78,7 @@ function ModalCamara({ modalVisible, tomarVideo, tomarFoto, salirModal, brujula2
             </TouchableOpacity>
             <View style={{ marginTop: 25 }}>
               <Text style={{ color: '#000000', textAlign: 'center', fontSize: 10 }}>Precisión del GPS:</Text>
-              <Text style={{ color: color, textAlign: 'center', fontWeight: 'bold', }}>{calibracionGps}</Text>
+              <Text style={{ color: colors, textAlign: 'center', fontWeight: 'bold', }}>{calibracionGps}</Text>
               {
                 calibracionGps === 'Baja' &&
                 <Text style={{ marginTop: 10, color: '#000000', textAlign: 'center', fontSize: 10 }}>Vuelve al inicio, ubícate en un mejor sitio e ingresa a la cámara cuando la precisión sea (BUENA)</Text>
