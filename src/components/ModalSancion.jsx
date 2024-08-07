@@ -92,14 +92,14 @@ function ModalSancion({ modalVisible4, setModalVisible4, borrar, playId, navigat
                             flexDirection: 'row',
                         }}>
                             <TouchableOpacity onPress={() => quitar(0)} style={styles.closeModalButton3}>
-                                <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#FF0000' }}>    NO    </Text>
+                                <Text style={{ marginTop: 5, fontWeight: 'bold', color: '#FF0000' }}>    NO    </Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => quitar(1)} style={styles.closeModalButton2}>
-                                <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#064B00' }}>     SI     </Text>
+                                <Text style={{ marginTop: 5, fontWeight: 'bold', color: '#064B00' }}>     SI     </Text>
                             </TouchableOpacity>
                         </View>
                         <TouchableOpacity onPress={() => salir()} style={styles.closeModalButton}>
-                            <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#000000' }} >     SALIR     </Text>
+                            <Text style={{ marginTop: 5, fontWeight: 'bold', color: '#000000' }} >     SALIR     </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
