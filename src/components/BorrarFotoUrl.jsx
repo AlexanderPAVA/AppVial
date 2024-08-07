@@ -10,7 +10,7 @@ export function BorrarFotoUrl(uriImg) {
                 const filePath = `${'file:///storage/emulated/0/Android/data/com.yoreporto/files/Pictures'}/${file}`;
                    RNFS.unlink(filePath)
                   .then(() => {
-                    //console.log(`Imagen ${file} borrada exitosamente`);
+                  
                   })
                   .catch((err) => {
                   });
