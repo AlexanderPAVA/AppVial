@@ -25,7 +25,8 @@ import config from '../config';
 import ModalSancion from '../components/ModalSancion';
 import { Notificarlikes } from '../components/Notificarlikes';
 import ScrollImg from '../components/ScrollImg';
-import ProAlert from '../components/ProAlert';
+import AlertPro from 'react-native-alert-pro';
+
 
 const RUTA_IMG_USER = config.RUTA_IMG_USER;
 const RUTA_INDIV_UNO = config.RUTA_INDIV_UNO;
@@ -61,7 +62,7 @@ function Individual({ route, navigation }) {
   const [borrar, setBorrar] = useState('');
   const [ToastServ, setToastServ] = useState('');
   const [playId, setPlayId] = useState('');
-  const [titulos, setTitulos] = useState('¿Desea eliminar este evento?');
+  const [titulos, setTitulos] = useState('');
   const { itemImg, itemid, altoModal, ratio2, formato, video } = modalInfo;
 
   const titulo = () => {
@@ -215,7 +216,7 @@ function Individual({ route, navigation }) {
   const eliminar = (id, player) => {
     setBorrar(id);
     setPlayId(player);
-    this.AlertPro.open()
+    this.AlertPro.open();
   };
 
   const quitar = () => {
@@ -261,7 +262,7 @@ function Individual({ route, navigation }) {
         setTitulos('¿Desea eliminar este evento?')
         navigation.navigate('ListaReporte', {
           data: borrar
-      });
+        });
       }).catch(function (error) {
         setToastServ('sinConexHome');
       });
@@ -301,7 +302,7 @@ function Individual({ route, navigation }) {
                 borderColor: '#FCB213',
                 borderWidth: 1
               }} />
-            <Text style={{ position: 'absolute', top: '10%', fontSize: 13, color: 'white', marginLeft: 57, }}>{item.nombre} </Text>
+            <Text style={{ position: 'absolute', top: '10%', fontSize: 13, color: '#fff', marginLeft: 57, }}>{item.nombre} </Text>
             <Text style={{ position: 'absolute', top: '60%', fontSize: 10, color: '#CDCDCD', marginLeft: 57, }}>{item.fecha} </Text>
           </View>
 
@@ -315,7 +316,7 @@ function Individual({ route, navigation }) {
           <Text style={{ fontSize: 11, color: '#CDCDCD', marginLeft: 5, marginTop: 5, padding: 5 }}>{item.zona} </Text>
           {
             item.frase !== '' &&
-            <Text style={{ fontSize: 13, color: 'white', marginTop: 5, marginBottom: 10, padding: 15, textAlign: 'justify', }}>{item.frase} </Text>
+            <Text style={{ fontSize: 13, color: '#fff', marginTop: 5, marginBottom: 10, padding: 15, textAlign: 'justify', }}>{item.frase} </Text>
           }
           <View style={{
             flexDirection: 'row',
@@ -340,18 +341,18 @@ function Individual({ route, navigation }) {
                 }} />
               </TouchableOpacity>
             }
-            <Text style={{ fontSize: 10, color: 'white', marginLeft: 0, }}>{item.megusta} </Text>
+            <Text style={{ fontSize: 10, color: '#fff', marginLeft: 0, }}>{item.megusta} </Text>
             {item.formato === 'foto' ?
-              <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18, }}>Vistas:  <Text style={{ color: 'white' }}>{item.vistas}</Text></Text>
+              <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18, }}>Vistas:  <Text style={{ color: '#fff' }}>{item.vistas}</Text></Text>
               :
-              <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18, }}>Reprod:  <Text style={{ color: 'white' }}>{item.vistas}</Text></Text>
+              <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18, }}>Reprod:  <Text style={{ color: '#fff' }}>{item.vistas}</Text></Text>
             }
             {
               sancion.tiempoRestante !== '0' || sancion.veces < '3' &&
               <TouchableOpacity onPress={() => reportar(item.emailusu, item.codigo)} >
                 <Text style={{
                   top: -5, fontSize: 8, color: '#9B9B9B', marginLeft: 20, borderRadius: 5,
-                  borderColor: 'gray', borderWidth: 1, marginTop: 10
+                  borderColor: '#808080', borderWidth: 1, marginTop: 10
                 }}>  Reportar </Text>
               </TouchableOpacity>
             }
@@ -365,7 +366,7 @@ function Individual({ route, navigation }) {
               </TouchableOpacity>
               : item.emailusu === user.email && item.conteolista > 10078 ?
                 <TouchableOpacity onPress={() => eliminar(item.idimg, item.playerid)}>
-                  <Icon style={{ marginLeft: 20 }} name='delete' color="red" size={28} />
+                  <Icon style={{ marginLeft: 20 }} name='delete' color="#FF0000" size={28} />
                 </TouchableOpacity>
                 : ''
             }
@@ -411,12 +412,48 @@ function Individual({ route, navigation }) {
         </View>
       </ScrollView>
 
-      <ProAlert
-        cargar={quitar}
-        noCargar={cancel}
-        titulo={titulos}
+      <AlertPro
+        ref={ref => {
+          this.AlertPro = ref;
+        }}
+        onConfirm={() => quitar()}
+        onCancel={() => cancel()}
+        title="¿Desea eliminar este evento?"
+        message=""
+        textCancel="NO"
+        textConfirm="SI"
+        customStyles={{
+          mask: {
+            backgroundColor: 'rgba(0, 0, 0, 1)'
+          },
+          container: {
+            borderWidth: 3,
+            borderRadius: 15,
+            borderColor: "#FFBB21",
+            shadowColor: "#000000",
+            shadowOpacity: 0.2,
+            shadowRadius: 10
+          },
+          buttonCancel: {
+            backgroundColor: "#DF0000",
+            marginHorizontal: 20,
+            height: 50
+          },
+          buttonConfirm: {
+            backgroundColor: "#007A09",
+            marginHorizontal: 20,
+          },
+          title: {
+            fontSize: 20,
+          },
+          textCancel: {
+            marginTop: 3
+          },
+          textConfirm: {
+            marginTop: 3
+          }
+        }}
       />
-
       <ToastServicios dato={ToastServ} />
     </SafeAreaView>
   )
