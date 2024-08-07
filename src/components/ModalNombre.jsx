@@ -107,10 +107,10 @@ function ModalNombre({ modalVisibles, setModalVisibles }) {
                             flexDirection: 'row',
                         }}>
                             <TouchableOpacity onPress={() => salir()} style={styles.closeModalButton3}>
-                                <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#FF0000' }}>   Salir    </Text>
+                                <Text style={{  marginTop: 5, fontWeight: 'bold', color: '#FF0000' }}>   Salir    </Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => cambiar()} style={styles.closeModalButton2}>
-                                <Text style={{ color: '#000000', marginTop: 5, fontWeight: 'bold', color: '#064B00' }}>  Cambiar  </Text>
+                                <Text style={{  marginTop: 5, fontWeight: 'bold', color: '#064B00' }}>  Cambiar  </Text>
                             </TouchableOpacity>
                         </View>
 
