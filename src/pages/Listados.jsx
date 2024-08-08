@@ -33,7 +33,8 @@ import config from '../config';
 import { Notificarlikes } from '../components/Notificarlikes';
 import ScrollImg from '../components/ScrollImg';
 import RNFS from 'react-native-fs';
-import AlertPro from 'react-native-alert-pro';
+import {AlertBox} from 'react-native-alertbox';
+import {fire} from 'react-native-alertbox';
 
 const RUTA_LISTA_UNO = config.RUTA_LISTA_UNO;
 const RUTA_LISTA_DOS = config.RUTA_LISTA_DOS;
@@ -78,12 +79,12 @@ function Listados({ route, navigation }) {
 
   const titulo = () => {
     return (
-      <>
+      <View>
         <Text style={{
           fontSize: 1,
           color: '#000000',
         }}></Text>
-      </>
+      </View>
     )
   };
 
@@ -351,7 +352,21 @@ function Listados({ route, navigation }) {
 
   const eliminar = (id) => {
     setBorrar(id);
-    this.AlertPro.open()
+    fire({
+      title: 'Importante',
+      message: '¿Desea eliminar este evento?',
+      // buttons
+      actions: [
+        {
+          text: 'NO',
+          style: 'cancel',
+        },
+        {
+          text: 'SI',
+          onPress: () => quitar(), // It is an object that holds fields data
+        },
+      ],
+    });
   };
 
   const quitar = () => {
@@ -386,15 +401,12 @@ function Listados({ route, navigation }) {
         } else if (res.data === 3) {
           setToastServ('NoDeletedos');
         }
-        this.AlertPro.close();
+       
       }).catch(function (error) {
         setToastServ('sinConexHome');
       });
   };
 
-  const cancel = () => {
-    this.AlertPro.close();
-  };
 
   const viewabilityConfig = {
     waitForInteraction: true,
@@ -579,49 +591,9 @@ function Listados({ route, navigation }) {
           reporte={reporte}
         />
       </View>
-  
-      <AlertPro
-        ref={ref4 => {
-          this.AlertPro = ref4;
-        }}
-        onConfirm={() => quitar()}
-        onCancel={() => cancel()}
-        title="¿Desea eliminar este evento?"
-        message=""
-        textCancel="NO"
-        textConfirm="SI"
-        customStyles={{
-          mask: {
-            backgroundColor: 'rgba(0, 0, 0, 1)'
-          },
-          container: {
-            borderWidth: 3,
-            borderRadius: 15,
-            borderColor: "#FFBB21",
-            shadowColor: "#000000",
-            shadowOpacity: 0.2,
-            shadowRadius: 10
-          },
-          buttonCancel: {
-            backgroundColor: "#DF0000",
-            marginHorizontal: 20,
-            height: 50
-          },
-          buttonConfirm: {
-            backgroundColor: "#007A09",
-            marginHorizontal: 20,
-          },
-          title: {
-            fontSize: 20,
-          },
-          textCancel: {
-            marginTop: 3
-          },
-          textConfirm: {
-            marginTop: 3
-          }
-        }}
-      />
+
+      <AlertBox />
+
 
       <ToastServicios dato={ToastServ} />
     </SafeAreaView>
