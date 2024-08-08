@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   StyleSheet,
   Text,
@@ -31,7 +31,8 @@ import { loadsancion } from '../redux/slices/sancion';
 import Iconc from 'react-native-vector-icons/Entypo';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import ModalNombre from '../components/ModalNombre';
-import AlertPro from 'react-native-alert-pro';
+import {AlertBox} from 'react-native-alertbox';
+import {fire} from 'react-native-alertbox';
 
 const GOOGLE_KEY = config.GOOGLE_KEY;
 const RUTA_IMG_USER = config.RUTA_IMG_USER;
@@ -45,6 +46,7 @@ const db = openDatabase({ name: "appLikes" });
 
 function LoginUser({ navigation }) {
 
+  const ref = useRef();
 
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.user);
@@ -60,7 +62,6 @@ function LoginUser({ navigation }) {
   const [isSwitchOnDos, setIsSwitchOnDos] = useState(notiUp);
   const [espere, setEspere] = useState('');
   const [idPlay, setIdPlay] = useState('');
-  const [msj, setMsj] = useState('');
 
   const onToggleSwitchUno = (switchx) => {
     if (reten !== 'Colombia') {
@@ -150,7 +151,7 @@ function LoginUser({ navigation }) {
           sancion.rango === 'adm' ?
             <TouchableOpacity onPress={() => listaReporte()}>
               <Text Text style={{
-                color: '#FBA000',
+                color: '#FCB213',
                 fontSize: 16,
                 fontWeight: 'bold',
               }}> Configuración</Text >
@@ -173,12 +174,29 @@ function LoginUser({ navigation }) {
   }, [user]);
 
   const logIn = () => {
-    this.AlertPro.open();
-    setMsj('¿Estás de acuerdo con nuestras condiciones de uso?');
+    fire({
+      title: 'Importante',
+      message: '¿Estás de acuerdo con nuestras condiciones de uso?',
+      // buttons
+      actions: [
+        {
+          text: 'NO',
+          style: 'cancel',
+        },
+        {
+          text: 'SI',
+          onPress: () => signInOut(), // It is an object that holds fields data
+        },
+      ],
+    });
+
+
   };
+
+
   const signInOut = async () => {
     if (!user?.email) {
-      this.AlertPro.close();
+   
       try {
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
         const { idToken } = await GoogleSignin.signIn();
@@ -282,7 +300,7 @@ function LoginUser({ navigation }) {
       }
 
     } else {
-      this.AlertPro.close();
+    
       try {
         await GoogleSignin.signOut();
         axios.post(RUTA_LOGIN_TRES, {
@@ -323,13 +341,28 @@ function LoginUser({ navigation }) {
   }
 
   const logOut = () => {
-    this.AlertPro.open();
-    setMsj('Al eliminar este registro quedas sin acceso a varias funciones.');
+   
+
+    fire({
+      title: 'Importante',
+      message: 'Al eliminar este registro quedas sin acceso a varias funciones.',
+      // buttons
+      actions: [
+        {
+          text: 'NO',
+          style: 'cancel',
+        },
+        {
+          text: 'SI',
+          onPress: () => signInOut(), // It is an object that holds fields data
+        },
+      ],
+    });
+
+    
   };
 
-  const noPoliticas = () => {
-    this.AlertPro.close();
-  };
+
 
   const irPoliticas = () => {
     navigation.navigate('MyWebView');
@@ -654,51 +687,7 @@ function LoginUser({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-
-
-<AlertPro
-          ref={ref2 => {
-            this.AlertPro = ref2;
-          }}
-          onConfirm={() => signInOut()}
-          onCancel={() => noPoliticas()}
-          title={msj}
-          message=""
-        textCancel="NO"
-        textConfirm="SI"
-        customStyles={{
-          mask: {
-            backgroundColor: 'rgba(0, 0, 0, 1)'
-          },
-          container: {
-            borderWidth: 3,
-            borderRadius: 15,
-            borderColor: "#FFBB21",
-            shadowColor: "#000000",
-            shadowOpacity: 0.2,
-            shadowRadius: 10
-          },
-          buttonCancel: {
-            backgroundColor: "#DF0000",
-            marginHorizontal: 20,
-            height: 50
-          },
-          buttonConfirm: {
-            backgroundColor: "#007A09",
-            marginHorizontal: 20,
-          },
-          title: {
-            fontSize: 19,
-          },
-          textCancel: {
-            marginTop: 3
-          },
-          textConfirm: {
-            marginTop: 3
-          }
-          }}
-        />
-
+        <AlertBox />
       </SafeAreaView>
       <ToastServicios dato={ToastServ} />
     </>
@@ -729,4 +718,4 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     alignItems: 'center',
   },
-})
+});
