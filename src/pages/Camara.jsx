@@ -88,12 +88,12 @@ function Camara({ route, navigation }) {
 
   const titulo = () => {
     return (
-      <>
+      <View>
         <Text style={{
           fontSize: 1,
           color: '#000000',
         }}></Text>
-      </>
+      </View>
     )
   };
 
