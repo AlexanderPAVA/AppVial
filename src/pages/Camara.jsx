@@ -33,7 +33,8 @@ import { Notificaciones } from '../components/Notificaciones';
 import { NotificacionesDos } from '../components/NotificacionesDos';
 import ModalCamara from '../components/ModalCamara';
 import { notiContext } from '../context/notiContext';
-import AlertPro from 'react-native-alert-pro';
+import AwesomeAlert from 'react-native-awesome-alerts';
+
 
 const MAPA_KEY = config.API_KEY_MAPS;
 const RUTA_CAM_UNO = config.RUTA_CAM_UNO;
@@ -82,6 +83,8 @@ function Camara({ route, navigation }) {
   const [brujula2, setbrujula2] = useState(brujula);
   const caracteresRestantes = MaxCaracteres - frase.length;
   const { latitude, longitude } = posicion;
+
+  const [showAlerts, setShowAlerts] = useState(false);
 
   const titulo = () => {
     return (
@@ -362,8 +365,8 @@ function Camara({ route, navigation }) {
                   frase: frase,
                   codigo: codigo
                 });
-                setMsj('Llevas 1 de 3 Fotos. ¿Deseas tomar otra foto?');
-                this.AlertPro.open();
+                setMsj('Llevas 1 de 3 Fotos');
+                setShowAlerts(true);
                 dispatch(loadpricarga(1));
                 BorrarImageUrl(image);
               } else if (res.data === 'e1') {
@@ -404,8 +407,8 @@ function Camara({ route, navigation }) {
             setMsjCamIni('');
             if (res.data === 'segunda') {
               setVerificarFoto(fotoSize);
-              setMsj('Llevas 2 de 3 Fotos. Carga otra imagen de este evento');
-              this.AlertPro.open();
+              setMsj('Llevas 2 de 3 Fotos');
+              setShowAlerts(true);
               BorrarImageUrl(image);
             } else if (res.data === 'tercera') {
               setPosicion('')
@@ -560,13 +563,13 @@ function Camara({ route, navigation }) {
 
   const cargarOtra = () => {
     setvercargaFoto('ver');
-    this.AlertPro.close();
+    setShowAlerts(false);
     tomarFoto();
   };
 
   const noCargar = () => {
     Notificaciones(lanzarNoti.problema, lanzarNoti.zona, lanzarNoti.frase, lanzarNoti.codigo, user.email, reten);
-    this.AlertPro.close();
+    setShowAlerts(false);
     dispatch(loadpricarga(1));
     navigation.navigate('Home');
   };
@@ -1043,51 +1046,26 @@ function Camara({ route, navigation }) {
                   </View>
                 </View>
 
-
-                <AlertPro
-                  ref={ref3 => {
-                    this.AlertPro = ref3;
-                  }}
-                  onConfirm={() => cargarOtra()}
-                  onCancel={() => noCargar()}
+                <AwesomeAlert
+                  show={showAlerts}
+                  showProgress={false}
                   title={msj}
-                  message=""
-                  textCancel="NO"
-                  textConfirm="SI"
-                  customStyles={{
-                    mask: {
-                      backgroundColor: 'rgba(0, 0, 0, 1)'
-                    },
-                    container: {
-                      borderWidth: 3,
-                      borderRadius: 15,
-                      borderColor: "#FFBB21",
-                      shadowColor: "#000000",
-                      shadowOpacity: 0.2,
-                      shadowRadius: 10
-                    },
-                    buttonCancel: {
-                      backgroundColor: "#DF0000",
-                      marginHorizontal: 20,
-                      height: 50
-                    },
-                    buttonConfirm: {
-                      backgroundColor: "#007A09",
-                      marginHorizontal: 20,
-                    },
-                    title: {
-                      fontSize: 19,
-                    },
-                    textCancel: {
-                      marginTop: 3
-                    },
-                    textConfirm: {
-                      marginTop: 3
-                    }
+                  message="¿Deseas cargar otra foto?"
+                  closeOnTouchOutside={true}
+                  closeOnHardwareBackPress={false}
+                  showCancelButton={true}
+                  showConfirmButton={true}
+                  cancelText="  No Cargar  "
+                  confirmText=" Cargar Otra "
+                  confirmButtonColor="#064B00"
+                  cancelButtonColor="#FF0000"
+                  onCancelPressed={() => {
+                    noCargar();
+                  }}
+                  onConfirmPressed={() => {
+                    cargarOtra();
                   }}
                 />
-
-
 
               </>
               : fotoVideo === 2 ?
@@ -1315,6 +1293,7 @@ function Camara({ route, navigation }) {
             </Dialog>
           </View>
         </ScrollView>
+
       </SafeAreaView>
       <ToastServicios dato={toastServ} />
     </>
