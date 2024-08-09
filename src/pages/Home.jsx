@@ -244,9 +244,9 @@ function Home({ navigation }) {
           }
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-         
+          console.log("Permiso concedido");
         } else {
-        
+        console.log("Permiso denegado");
         }
       } catch (err) {
         //console.warn(err);
