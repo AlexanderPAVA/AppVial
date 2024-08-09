@@ -45,7 +45,7 @@ const RUTA_CAM_CUATRO = config.RUTA_CAM_CUATRO;
 
 const MaxCaracteres = 250;
 
-function Camara() {
+function Camara(){
 
   const route = useRoute();
   const navigation = useNavigation();
@@ -69,7 +69,7 @@ function Camara() {
   const [visible2, setVisible2] = useState(false);
   const [titleDialogo, setTitleDialogo] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [vercargaFoto, setVerCargaFoto] = useState('nover');
+  const [vercargaFoto, setVercargaFoto] = useState('nover');
   const [fotoSizeAncho, setFotoSizeAncho] = useState(0);
   const [fotoSizeAlto, setFotoSizeAlto] = useState(0);
   const [evento, setEvento] = useState('');
@@ -324,7 +324,7 @@ function Camara() {
 
   const subirFoto = (dataImg, problema) => {
     if (pais === 'Colombia') {
-      setVerCargaFoto('nover');
+      setVercargaFoto('nover');
       setMsjCamIni('Cargardo Evento');
       setTimeout(() => {
         setMsjCamIni('Ubíquese donde haya señal');
@@ -566,7 +566,7 @@ function Camara() {
   };
 
   const cargarOtra = () => {
-    setVerCargaFoto('ver');
+    setVercargaFoto('ver');
     setShowAlerts(false);
     tomarFoto();
   };
