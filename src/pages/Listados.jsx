@@ -34,7 +34,7 @@ import { Notificarlikes } from '../components/Notificarlikes';
 import ScrollImg from '../components/ScrollImg';
 import RNFS from 'react-native-fs';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const RUTA_LISTA_UNO = config.RUTA_LISTA_UNO;
 const RUTA_LISTA_DOS = config.RUTA_LISTA_DOS;
@@ -47,16 +47,17 @@ const RUTA_IMG_USER = config.RUTA_IMG_USER;
 
 const win = Dimensions.get('window');
 
-function Listados({ navigation }) {
+function Listados() {
 
   const route = useRoute();
+  const navigation = useNavigation();
 
   const { lista, likes } = route.params;
   const { user } = useSelector(state => state.user);
   const { mes } = useSelector(state => state.mes);
   const { sancion } = useSelector(state => state.sancion);
   const dispatch = useDispatch();
-  const [listaIni, setlistaIni] = useState([]);
+  const [listaIni, setListaIni] = useState([]);
   const [listaIniDos, setListaIniDos] = useState(lista);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
@@ -117,7 +118,7 @@ function Listados({ navigation }) {
 
   useEffect(() => {
     setListaLike(likes);
-    setlistaIni(lista);
+    setListaIni(lista);
     vistauno();
     navigation.setOptions({
       headerStyle: { backgroundColor: '#000000' },
@@ -234,19 +235,19 @@ function Listados({ navigation }) {
 
   const filtro = useCallback((text) => {
     const newData = listaIniDos.filter(event => event.problem === text);
-    setlistaIni(newData);
+    setListaIni(newData);
   }, []);
 
   const onRefresh = useCallback(() => {
     if (value === 1) {
       setRefreshing(true);
-      setlistaIni(listaIniDos)
+      setListaIni(listaIniDos)
       wait(300).then(() => setRefreshing(false));
     } else {
       setValue(null);
       axios.get(RUTA_LISTA_TRES)
         .then(function (listas) {
-          setlistaIni(listas.data);
+          setListaIni(listas.data);
           setListaIniDos(listas.data)
         })
         .catch(function (error) {
@@ -302,7 +303,7 @@ function Listados({ navigation }) {
             return lista
           };
         });
-        setlistaIni(sumaLike);
+        setListaIni(sumaLike);
         db.transaction(txn => {
           txn.executeSql(
             `INSERT INTO likes (idimg, mes)  VALUES (?,?)`,
@@ -367,7 +368,7 @@ function Listados({ navigation }) {
         setShowAlert(false);
         if (res.data === 0) {
           const listaMenos = listaIni.filter(listado => listado.idimg !== borrar)
-          setlistaIni(listaMenos);
+          setListaIni(listaMenos);
           setToastServ('delete2');
           if (listaMenos.length === 0) {
             setTimeout(() => {
@@ -387,7 +388,7 @@ function Listados({ navigation }) {
             }
 
           })
-          setlistaIni(quitarIconBasura);
+          setListaIni(quitarIconBasura);
           
         } else if (res.data === 3) {
           setToastServ('NoDeletedos');
