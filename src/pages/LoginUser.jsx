@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -45,8 +45,6 @@ const RUTA_HOME_UNO = config.RUTA_HOME_UNO;
 const db = openDatabase({ name: "appLikes" });
 
 function LoginUser({ navigation }) {
-
-  const ref = useRef();
 
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.user);
@@ -175,7 +173,7 @@ function LoginUser({ navigation }) {
 
   const logIn = () => {
     fire({
-      title: 'Importante',
+      title: 'Cargar Usuario',
       message: '¿Estás de acuerdo con nuestras condiciones de uso?',
       // buttons
       actions: [
@@ -331,11 +329,7 @@ function LoginUser({ navigation }) {
 
       }
       catch (error) {
-        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        } else if (error.code === statusCodes.IN_PROGRESS) {
-        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        } else {
-        }
+        Alert.alert(error + '... intenta de nuevo')
       }
     }
   }
@@ -344,7 +338,7 @@ function LoginUser({ navigation }) {
    
 
     fire({
-      title: 'Importante',
+      title: 'Borrar registro',
       message: 'Al eliminar este registro quedas sin acceso a varias funciones.',
       // buttons
       actions: [
