@@ -7,7 +7,6 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { Checkbox } from 'react-native-paper';
-import { useSelector } from 'react-redux';
 import ToastServicios from './ToastServicios';
 import axios from 'axios';
 import config from '../config';
@@ -20,11 +19,45 @@ const RUTA_NOTIS = config.RUTA_NOTIS;
 
 function ModalReporte({ modalVisible3, setModalVisible3, reporte }) {
 
-    const { user } = useSelector(state => state.user);
     const { codigo, emailusu } = reporte;
     const [checked, setChecked] = useState(false);
     const [ToastServ, setToastServ] = useState('');
     const [msj, setMsj] = useState('');
+
+    const  lanzarNoti =(datos)=>{
+
+        for (let i = 0; i < datos.length; i++) {
+            const component = datos[i];
+
+            let headers = {
+                'Content-Type': 'application/json; charset=utf-8',
+                Authorization: AUTHO_TOKEN,
+            };
+            let url = RUTA_NOTIS;
+            let params = {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
+                    app_id: API_KEY,
+                    headings: { "en": 'Reporte de Evento' },
+                    contents: { "en": component.nombre + ', verifica la publicación, para ver si cumple las condiciones.' },
+                    android_accent_color: "FFE700",
+                    include_player_ids: [component.idsignal],
+                    data: {
+                        codigoId: codigo,
+                        emailUsu: emailusu
+                    }
+                }),
+            };
+            fetch(url, params);
+            setChecked(!checked);
+            setMsj('Reporte enviado');
+            setTimeout(() => {
+                setModalVisible3(false);
+                setMsj('');
+            }, 2000);
+        };
+    }
 
     const enviar = () => {
         axios.post(MODAL_REPORTEUNO, {
@@ -35,39 +68,7 @@ function ModalReporte({ modalVisible3, setModalVisible3, reporte }) {
                 axios.get(MODAL_REPORTEDOS)
                     .then(function (resp) {
                         const datos = resp.data;
-
-                        for (let i = 0; i < datos.length; i++) {
-                            const component = datos[i];
-
-                            let headers = {
-                                'Content-Type': 'application/json; charset=utf-8',
-                                Authorization: AUTHO_TOKEN,
-                            };
-                            let url = RUTA_NOTIS;
-                            let params = {
-                                method: 'POST',
-                                headers: headers,
-                                body: JSON.stringify({
-                                    app_id: API_KEY,
-                                    headings: { "en": 'Reporte de Evento' },
-                                    contents: { "en": component.nombre + ', verifica la publicación, para ver si cumple las condiciones.' },
-                                    android_accent_color: "FFE700",
-                                    include_player_ids: [component.idsignal],
-                                    data: {
-                                        codigoId: codigo,
-                                        emailUsu: emailusu
-                                    }
-                                }),
-                            };
-                            fetch(url, params);
-                            setChecked(!checked);
-                            setMsj('Reporte enviado');
-                            setTimeout(() => {
-                                setModalVisible3(false);
-                                setMsj('');
-                            }, 2000);
-                        };
-
+                        lanzarNoti(datos);
                     })
                     .catch(function (error) {
                     });
