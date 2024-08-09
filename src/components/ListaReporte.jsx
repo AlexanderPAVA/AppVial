@@ -8,6 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import ToastServicios from './ToastServicios';
 import axios from 'axios';
 import { FlashList } from '@shopify/flash-list';
@@ -17,7 +18,10 @@ import config from '../config';
 const RUTA_HOME_DOS = config.RUTA_HOME_DOS;
 const LISTA_REPORTE = config.LISTA_REPORTE;
 
-function ListaReporte({ route, navigation }) {
+function ListaReporte() {
+
+  const route = useRoute();
+  const navigation = useNavigation();
 
   const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -112,7 +116,7 @@ function ListaReporte({ route, navigation }) {
     return (
       <TouchableOpacity onPress={() => verItem(item.codigo, item.emailusu)}>
         <View style={{ padding: 15, marginLeft: 5, }}>
-          <Text style={{ color: 'white', fontSize: 20 }}> -   {item.codigo}   <Text style={{color: 'red'}}>( {item.veces} )</Text>  </Text>
+          <Text style={{ color: '#fff', fontSize: 20 }}> -   {item.codigo}   <Text style={{color: '#FF0000'}}>( {item.veces} )</Text>  </Text>
         </View>
       </TouchableOpacity>
     )
@@ -157,7 +161,7 @@ function ListaReporte({ route, navigation }) {
             }}>
               <TouchableOpacity onPress={() => salir()}>
                 <Icon name='emoji-sad' color="#FCB213" size={60} style={{ textAlign: 'center' }} />
-                <Text style={{ color: 'white', fontSize: 13, textAlign: 'center', marginTop: 15 }}>No hay reportes para mostrar</Text>
+                <Text style={{ color: '#fff', fontSize: 13, textAlign: 'center', marginTop: 15 }}>No hay reportes para mostrar</Text>
               </TouchableOpacity>
             </View>
       }
@@ -171,6 +175,6 @@ export default ListaReporte;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#000000',
   },
 });
