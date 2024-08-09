@@ -25,7 +25,7 @@ import config from '../config';
 import ModalSancion from '../components/ModalSancion';
 import { Notificarlikes } from '../components/Notificarlikes';
 import ScrollImg from '../components/ScrollImg';
-import AlertPro from 'react-native-alert-pro';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 
 const RUTA_IMG_USER = config.RUTA_IMG_USER;
@@ -38,6 +38,7 @@ const NO_DELETE_ITEM = config.NO_DELETE_ITEM;
 const win = Dimensions.get('window');
 
 function Individual({ route, navigation }) {
+  
   const { datoItem, noti } = route.params;
   const { user } = useSelector(state => state.user);
   const { sancion } = useSelector(state => state.sancion);
@@ -62,17 +63,19 @@ function Individual({ route, navigation }) {
   const [borrar, setBorrar] = useState('');
   const [ToastServ, setToastServ] = useState('');
   const [playId, setPlayId] = useState('');
-  const [titulos, setTitulos] = useState('');
+  const [titulos, setTitulos] = useState('¿Desea eliminar este evento?');
   const { itemImg, itemid, altoModal, ratio2, formato, video } = modalInfo;
+
+  const [showAlert, setShowAlert] = useState(false);
 
   const titulo = () => {
     return (
-      <>
+      <View>
         <Text style={{
           fontSize: 1,
           color: '#000000',
         }}></Text>
-      </>
+      </View>
     )
   };
 
@@ -216,13 +219,13 @@ function Individual({ route, navigation }) {
   const eliminar = (id, player) => {
     setBorrar(id);
     setPlayId(player);
-    this.AlertPro.open();
+   setShowAlert(true);
   };
 
   const quitar = () => {
     if (rango === 'adm') {
       setModalVisible4(true);
-      this.AlertPro.close();
+      setShowAlert(false);
     } else {
       axios.post(RUTA_INDIV_CINCO, {
         id: borrar,
@@ -244,7 +247,7 @@ function Individual({ route, navigation }) {
         } else if (res.data === 3) {
           setToastServ('NoDeletedos');
         }
-        this.AlertPro.close();
+        setShowAlert(false);
       }).catch(function (error) {
         setToastServ('sinConexHome');
       });
@@ -258,7 +261,7 @@ function Individual({ route, navigation }) {
         id: borrar,
         adm: rango,
       }).then(res => {
-        this.AlertPro.close();
+       setShowAlert(false);
         setTitulos('¿Desea eliminar este evento?')
         navigation.navigate('ListaReporte', {
           data: borrar
@@ -267,7 +270,7 @@ function Individual({ route, navigation }) {
         setToastServ('sinConexHome');
       });
     } else {
-      this.AlertPro.close();
+     setShowAlert(false);
     }
   };
 
@@ -372,6 +375,7 @@ function Individual({ route, navigation }) {
             }
 
           </View>
+          
         </View>
         <View >
           <ModalImg
@@ -412,54 +416,34 @@ function Individual({ route, navigation }) {
         </View>
       </ScrollView>
 
-      <AlertPro
-        ref={ref => {
-          this.AlertPro = ref;
-        }}
-        onConfirm={() => quitar()}
-        onCancel={() => cancel()}
-        title="¿Desea eliminar este evento?"
-        message=""
-        textCancel="NO"
-        textConfirm="SI"
-        customStyles={{
-          mask: {
-            backgroundColor: 'rgba(0, 0, 0, 1)'
-          },
-          container: {
-            borderWidth: 3,
-            borderRadius: 15,
-            borderColor: "#FFBB21",
-            shadowColor: "#000000",
-            shadowOpacity: 0.2,
-            shadowRadius: 10
-          },
-          buttonCancel: {
-            backgroundColor: "#DF0000",
-            marginHorizontal: 20,
-            height: 50
-          },
-          buttonConfirm: {
-            backgroundColor: "#007A09",
-            marginHorizontal: 20,
-          },
-          title: {
-            fontSize: 20,
-          },
-          textCancel: {
-            marginTop: 3
-          },
-          textConfirm: {
-            marginTop: 3
-          }
-        }}
-      />
+      <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Atención"
+          message={titulos}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Cancelar"
+          confirmText=" Eliminar "
+          confirmButtonColor="#064B00"
+          cancelButtonColor="#FF0000"
+          onCancelPressed={() => {
+            cancel();
+          }}
+          onConfirmPressed={() => {
+            quitar();
+          }}
+        />
+
       <ToastServicios dato={ToastServ} />
     </SafeAreaView>
   )
-}
+};
 
 export default Individual;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
