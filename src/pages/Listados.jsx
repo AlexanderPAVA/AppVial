@@ -34,6 +34,7 @@ import { Notificarlikes } from '../components/Notificarlikes';
 import ScrollImg from '../components/ScrollImg';
 import RNFS from 'react-native-fs';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { useRoute } from '@react-navigation/native';
 
 const RUTA_LISTA_UNO = config.RUTA_LISTA_UNO;
 const RUTA_LISTA_DOS = config.RUTA_LISTA_DOS;
@@ -46,7 +47,9 @@ const RUTA_IMG_USER = config.RUTA_IMG_USER;
 
 const win = Dimensions.get('window');
 
-function Listados({ route, navigation }) {
+function Listados({ navigation }) {
+
+  const route = useRoute();
 
   const { lista, likes } = route.params;
   const { user } = useSelector(state => state.user);
