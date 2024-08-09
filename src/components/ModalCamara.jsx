@@ -6,6 +6,7 @@ import {
   Modal,
   TouchableOpacity
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Iconc from 'react-native-vector-icons/Entypo';
 import { magnetometer, setUpdateIntervalForType, SensorTypes } from "react-native-sensors";
 
@@ -89,7 +90,14 @@ function ModalCamara({ modalVisible, tomarVideo, tomarFoto, salirModal, brujula2
       </Modal>
     </View>
   )
-}
+};
+
+ModalCamara.propTypes = {
+  modalVisible: PropTypes.bool.isRequired,
+  salirModal: PropTypes.func.isRequired,
+  tomarFoto: PropTypes.func.isRequired,
+  brujula2: PropTypes.string.isRequired,
+};
 
 export default ModalCamara;
 
