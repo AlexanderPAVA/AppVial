@@ -455,11 +455,7 @@ function Listados({ route, navigation }) {
             }} />
           <Text style={{ position: 'absolute', top: '10%', fontSize: 13, color: '#fff', marginLeft: 57, }}>{item.nombre}</Text>
           <Text style={{ position: 'absolute', top: '60%', fontSize: 10, color: '#CDCDCD', marginLeft: 57, }}>{item.fecha} </Text>
-          {item.problem === 'Accidente' ?
-            <Text style={{ position: 'absolute', top: '60%', right: '3%', fontSize: 11, color: '#FCB213' }}>{item.problem} </Text>
-            :
-            <Text style={{ position: 'absolute', top: '60%', right: '3%', fontSize: 11, color: '#FCB213' }}>{item.problem} </Text>
-          }
+          <Text style={{ position: 'absolute', top: '60%', right: '3%', fontSize: 11, color: '#FCB213' }}>{item.problem} </Text>
         </View>
         <ScrollImg
           item={item}
