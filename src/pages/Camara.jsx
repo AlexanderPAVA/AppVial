@@ -10,6 +10,10 @@ import {
   LogBox,
   PermissionsAndroid
 } from 'react-native';
+
+import PropTypes from 'prop-types';
+
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { TextInput, ActivityIndicator } from 'react-native-paper';
 import Geolocation from 'react-native-geolocation-service';
 import { useDispatch, useSelector } from 'react-redux';
@@ -36,6 +40,7 @@ import { notiContext } from '../context/notiContext';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 
+
 const MAPA_KEY = config.API_KEY_MAPS;
 const RUTA_CAM_UNO = config.RUTA_CAM_UNO;
 const RUTA_CAM_DOS = config.RUTA_CAM_DOS;
@@ -44,7 +49,10 @@ const RUTA_CAM_CUATRO = config.RUTA_CAM_CUATRO;
 
 const MaxCaracteres = 250;
 
-function Camara({ route, navigation }) {
+function Camara(){
+
+  const route = useRoute();
+  const navigation = useNavigation();
 
   const { enterNoti } = useContext(notiContext);
   const { datoGps, brujula, pais } = route.params;
@@ -57,20 +65,20 @@ function Camara({ route, navigation }) {
   const [fotoSize, setFotoSize] = useState('');
   const [codigo, setCodigo] = useState('');
   const [toastServ, setToastServ] = useState('');
-  const [frase, onChangeFrase] = useState('');
-  const [zona, onChangeZona] = useState('');
+  const [frase, setFrase] = useState('');
+  const [zona, setZona] = useState('');
   const [msj, setMsj] = useState('');
   const [msj2, setMsj2] = useState('');
   const [vistaFotoPantalla, setVistaFotoPantalla] = useState('');
   const [visible2, setVisible2] = useState(false);
   const [titleDialogo, setTitleDialogo] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [vercargaFoto, setvercargaFoto] = useState('nover');
+  const [vercargaFoto, setVercargaFoto] = useState('nover');
   const [fotoSizeAncho, setFotoSizeAncho] = useState(0);
   const [fotoSizeAlto, setFotoSizeAlto] = useState(0);
   const [evento, setEvento] = useState('');
   const [lanzarNoti, setLanzarNoti] = useState('');
-  const [modalVisible, setmodalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [eventoVideo, setEventoVideo] = useState('');
   const [fotoVideo, setFotoVideo] = useState(0);
   const [loadVideo, setLoadVideo] = useState(0);
@@ -80,11 +88,20 @@ function Camara({ route, navigation }) {
   const [textoRecorte, setTextoRecorte] = useState('');
   const [timeUse, setTimeUse] = useState(0);
   const [gpsCache, setGpsCache] = useState(0);
-  const [brujula2, setbrujula2] = useState(brujula);
+  const [brujula2, setBrujula2] = useState(brujula);
   const caracteresRestantes = MaxCaracteres - frase.length;
   const { latitude, longitude } = posicion;
 
   const [showAlerts, setShowAlerts] = useState(false);
+
+  console.log(brujula)
+
+  ModalCamara.propTypes = {
+    modalVisible: PropTypes.bool.isRequired,
+    salirModal: PropTypes.func.isRequired,
+    tomarFoto: PropTypes.func.isRequired,
+    brujula2: PropTypes.string.isRequired,
+  };
 
   const titulo = () => {
     return (
@@ -160,7 +177,7 @@ function Camara({ route, navigation }) {
                   .then(data => {
                     if (enterNoti !== 0) {
                       navigation.goBack()
-                      setmodalVisible(false);
+                      setModalVisible(false);
                       navigation.navigate('Individual', {
                         datoItem: enterNoti,
                         noti: 1
@@ -179,13 +196,13 @@ function Camara({ route, navigation }) {
                       const results = data.results[2]?.address_components[1]?.long_name;
                       const resultsdos = data.results[2]?.address_components[2]?.long_name;
                       if (locationdptos !== undefined) {
-                        onChangeZona(locationdptos + ', ' + reten);
+                        setZona(locationdptos + ', ' + reten);
                       } else if (results !== undefined) {
-                        onChangeZona(results + ', ' + reten);
+                        setZona(results + ', ' + reten);
                       } else {
-                        onChangeZona(resultsdos + ', ' + reten);
+                        setZona(resultsdos + ', ' + reten);
                       }
-                      setmodalVisible(true);
+                      setModalVisible(true);
                     }
                     dispatch(loadsancion({
                       tiempoRestante: '0',
@@ -220,7 +237,7 @@ function Camara({ route, navigation }) {
           }
         }, 1000);
       } else {
-        onChangeZona('Sin Acceso');
+        setZona('Sin Acceso');
         setVisible2(!visible2);
         setMsj2(info);
         setTitleDialogo('Sin Acceso');
@@ -241,11 +258,11 @@ function Camara({ route, navigation }) {
   };
   const tomarFoto = () => {
     setFotoVideo(1);
-    setmodalVisible(false);
+    setModalVisible(false);
     ImagePicker.openCamera({
       mediaType: 'Photo'
     }).then(image => {
-      setmodalVisible(false);
+      setModalVisible(false);
       setEspere('Espere un momento')
       const anchos = image.width * 0.25;
       const altos = image.height * 0.25;
@@ -320,7 +337,7 @@ function Camara({ route, navigation }) {
 
   const subirFoto = (dataImg, problema) => {
     if (pais === 'Colombia') {
-      setvercargaFoto('nover');
+      setVercargaFoto('nover');
       setMsjCamIni('Cargardo Evento');
       setTimeout(() => {
         setMsjCamIni('Ubíquese donde haya señal');
@@ -562,7 +579,7 @@ function Camara({ route, navigation }) {
   };
 
   const cargarOtra = () => {
-    setvercargaFoto('ver');
+    setVercargaFoto('ver');
     setShowAlerts(false);
     tomarFoto();
   };
@@ -575,7 +592,7 @@ function Camara({ route, navigation }) {
   };
 
   const salirModal = () => {
-    setmodalVisible(false);
+    setModalVisible(false);
     navigation.navigate('Home');
   };
 
@@ -707,7 +724,7 @@ function Camara({ route, navigation }) {
 
   const tomarVideo = () => {
     setFotoVideo(2);
-    setmodalVisible(false);
+    setModalVisible(false);
     ImagePicker.openCamera({
       mediaType: 'video',
     }).then(image => {
@@ -927,7 +944,7 @@ function Camara({ route, navigation }) {
                           theme={{ colors: { onSurfaceVariant: '#A3A3A3' }, }}
                           multiline={true}
                           numberOfLines={3}
-                          onChangeText={onChangeFrase}
+                          onChangeText={setFrase}
                           value={frase}
                           placeholder="Ingrese comentario corto"
                           textColor="#000000"
@@ -1159,7 +1176,7 @@ function Camara({ route, navigation }) {
                         theme={{ colors: { onSurfaceVariant: '#A3A3A3' }, }}
                         multiline={true}
                         numberOfLines={3}
-                        onChangeText={onChangeFrase}
+                        onChangeText={setFrase}
                         value={frase}
                         placeholder="Ingrese comentario corto"
                         textColor="#000000"
