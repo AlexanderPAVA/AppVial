@@ -71,14 +71,14 @@ function Listados() {
     video: ''
   });
 
-  const { itemImg, itemid, altoModal, ratio2, formato, video } = modalInfo;
+  const { itemImg, itemid, altoModal, ratio2, video } = modalInfo;
   const [listaLike, setListaLike] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [value, setValue] = useState(null);
   const [ocultarFiltro, setOcultarFiltro] = useState(false);
   const [reporte, setReporte] = useState('');
   const [borrar, setBorrar] = useState('');
-  const [ToastServ, setToastServ] = useState('');
+  const [toastServ, setToastServ] = useState('');
 
   const [showAlert, setShowAlert] = useState(false);
 
@@ -605,7 +605,7 @@ function Listados() {
         />
 
 
-      <ToastServicios dato={ToastServ} />
+      <ToastServicios dato={toastServ} />
     </SafeAreaView>
   )
 }
