@@ -9,7 +9,7 @@ import FastImage from 'react-native-fast-image';
 import Iconx from 'react-native-vector-icons/MaterialIcons';
 import config from '../config';
 
-var RUTA_IMG_IMGS = config.RUTA_IMG_IMGS;
+const RUTA_IMG_IMGS = config.RUTA_IMG_IMGS;
 
 function ScrollImg({ item, verModalLista, ratio, winAncho }) {
     return (
