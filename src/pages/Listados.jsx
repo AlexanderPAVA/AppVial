@@ -33,8 +33,7 @@ import config from '../config';
 import { Notificarlikes } from '../components/Notificarlikes';
 import ScrollImg from '../components/ScrollImg';
 import RNFS from 'react-native-fs';
-import {AlertBox} from 'react-native-alertbox';
-import {fire} from 'react-native-alertbox';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const RUTA_LISTA_UNO = config.RUTA_LISTA_UNO;
 const RUTA_LISTA_DOS = config.RUTA_LISTA_DOS;
@@ -76,6 +75,8 @@ function Listados({ route, navigation }) {
   const [reporte, setReporte] = useState('');
   const [borrar, setBorrar] = useState('');
   const [ToastServ, setToastServ] = useState('');
+
+  const [showAlert, setShowAlert] = useState(false);
 
   const titulo = () => {
     return (
@@ -352,29 +353,15 @@ function Listados({ route, navigation }) {
 
   const eliminar = (id) => {
     setBorrar(id);
-    fire({
-      title: 'Importante',
-      message: '¿Desea eliminar este evento?',
-      // buttons
-      actions: [
-        {
-          text: 'NO',
-          style: 'cancel',
-        },
-        {
-          text: 'SI',
-          onPress: () => quitar(), // It is an object that holds fields data
-        },
-      ],
-    });
+    setShowAlert(true);
   };
 
   const quitar = () => {
     axios.post(RUTA_LISTA_SEIS, {
       id: borrar,
       adm: '0'
-    })
-      .then(res => {
+    }).then(res => {
+        setShowAlert(false);
         if (res.data === 0) {
           const listaMenos = listaIni.filter(listado => listado.idimg !== borrar)
           setlistaIni(listaMenos);
@@ -398,6 +385,7 @@ function Listados({ route, navigation }) {
 
           })
           setlistaIni(quitarIconBasura);
+          
         } else if (res.data === 3) {
           setToastServ('NoDeletedos');
         }
@@ -407,6 +395,9 @@ function Listados({ route, navigation }) {
       });
   };
 
+  const cancel = () => {
+    setShowAlert(false);
+  };
 
   const viewabilityConfig = {
     waitForInteraction: true,
@@ -592,7 +583,26 @@ function Listados({ route, navigation }) {
         />
       </View>
 
-      <AlertBox />
+      <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Atención"
+          message="¿Desea eliminar este evento?"
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Cancelar"
+          confirmText=" Eliminar "
+          confirmButtonColor="#064B00"
+          cancelButtonColor="#FF0000"
+          onCancelPressed={() => {
+            cancel();
+          }}
+          onConfirmPressed={() => {
+            quitar();
+          }}
+        />
 
 
       <ToastServicios dato={ToastServ} />
