@@ -67,7 +67,7 @@ function ModalSancion({ modalVisible4, setModalVisible4, borrar, playId, navigat
                     setModalVisible4(false);
                 }, 5000);
             }
-            this.AlertPro.close();
+          
         }).catch(function (error) {
             setToastServ('sinConexHome');
         });
