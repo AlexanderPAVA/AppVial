@@ -79,6 +79,15 @@ function Individual({ route, navigation }) {
     )
   };
 
+const loadLike =(res)=>{
+  if (res.rows.length > 0) {
+    const listaz = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
+    console.log(listaz);
+  const datos = listaz.filter(dato => (dato.idimg === item.idimg));
+  const idimg = datos.length > 0 ? datos[0].idimg : '';
+  setLikes(idimg);
+}};
+
   useEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: '#000000' },
@@ -98,13 +107,7 @@ function Individual({ route, navigation }) {
         `SELECT * FROM likes ORDER BY id ASC`,
         [],
         (sqlTxn, res) => {
-            if (res.rows.length > 0) {
-              const listaz = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
-              console.log(listaz);
-            const datos = listaz.filter(dato => (dato.idimg === item.idimg));
-            const idimg = datos.length > 0 ? datos[0].idimg : '';
-            setLikes(idimg);
-          };
+            loadLike(res);
         })
     });
 
