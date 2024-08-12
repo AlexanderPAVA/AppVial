@@ -61,10 +61,10 @@ function Individual({ route, navigation }) {
   });
   const [reporte, setReporte] = useState('');
   const [borrar, setBorrar] = useState('');
-  const [ToastServ, setToastServ] = useState('');
+  const [toastServ, setToastServ] = useState('');
   const [playId, setPlayId] = useState('');
   const [titulos, setTitulos] = useState('¿Desea eliminar este evento?');
-  const { itemImg, itemid, altoModal, ratio2, formato, video } = modalInfo;
+  const { itemImg, itemid, altoModal, ratio2, video } = modalInfo;
 
   const [showAlert, setShowAlert] = useState(false);
 
@@ -99,11 +99,11 @@ function Individual({ route, navigation }) {
         [],
         (sqlTxn, res) => {
           let listax = [];
-          if (res.rows.length > 0) {
-            for (var i = 0; i < res.rows.length; i++) {
-              listax.push(res.rows.item(i));
-            }
-            const datos = listax.filter(dato => (dato.idimg === item.idimg));
+         
+            if (res.rows.length > 0) {
+              const listaz = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
+              console.log(listaz);
+            const datos = listaz.filter(dato => (dato.idimg === item.idimg));
             const idimg = datos.length > 0 ? datos[0].idimg : '';
             setLikes(idimg);
           };
@@ -169,6 +169,7 @@ function Individual({ route, navigation }) {
           megusta: res.data,
           like: true
         });
+        
         db.transaction(txn => {
           txn.executeSql(
             `INSERT INTO likes (idimg, mes)  VALUES (?,?)`,
@@ -181,9 +182,8 @@ function Individual({ route, navigation }) {
                   (sqlTxn, res) => {
                     let listax = [];
                     if (res.rows.length > 0) {
-                      for (var i = 0; i < res.rows.length; i++) {
-                        listax.push(res.rows.item(i));
-                      }
+                      const listax = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
+                      console.log(listax);
                       axios.post(RUTA_INDIV_CUATRO, {
                         data: listax,
                         emailusu: user.email
@@ -437,7 +437,7 @@ function Individual({ route, navigation }) {
           }}
         />
 
-      <ToastServicios dato={ToastServ} />
+      <ToastServicios dato={toastServ} />
     </SafeAreaView>
   )
 };
