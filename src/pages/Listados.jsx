@@ -165,6 +165,42 @@ function Listados() {
       ),
     });
 
+    const verMes =(res)=>{
+
+      if (res.rows.length > 0) {
+        const listap = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
+        console.log(listap);
+
+        axios.post(RUTA_LISTA_DOS, {
+          data: listap,
+          emailusu: user.email
+        })
+          .then(respt => {
+            dispatch(loadmes(mesActual));
+            ImagePicker.clean().then(() => {
+              setTimeout(async () => {
+                const cacheDir = RNFS.CachesDirectoryPath;
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                try {
+                  const files = await RNFS.readDir(cacheDir);
+                  for (const file of files) {
+                    const fileInfo = await RNFS.stat(file.path);
+                    const fileCreationDate = new Date(fileInfo.ctime);
+                    if (fileCreationDate < oneMonthAgo) {
+                      await RNFS.unlink(file.path);
+                    }
+                  }
+                } catch (error) {
+                }
+              }, 500);
+            }).catch(e => {
+            });
+          }).catch(function (error) {
+          });
+      }
+    };
+
     const meses = new Date();
     const month = meses.getMonth();
     const monthNew = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -172,7 +208,7 @@ function Listados() {
     const day = new Date();
     const dias = day.getDate();
     if (mes !== '') {
-    if (dias >= 8 && mes !== mesActual) {
+      if (dias >= 8 && mes !== mesActual) {
         db.transaction(txn => {
           txn.executeSql(
             `DELETE FROM likes WHERE mes != ?`,
@@ -183,39 +219,7 @@ function Listados() {
                   `SELECT * FROM likes ORDER BY id ASC`,
                   [],
                   (sqlTxn, res) => {
-                    let listax = [];
-                    if (res.rows.length > 0) {
-                      for (var i = 0; i < res.rows.length; i++) {
-                        listax.push(res.rows.item(i));
-                      }
-                      axios.post(RUTA_LISTA_DOS, {
-                        data: listax,
-                        emailusu: user.email
-                      })
-                        .then(respt => {
-                          dispatch(loadmes(mesActual));
-                          ImagePicker.clean().then(() => {
-                            setTimeout(async() => {
-                              const cacheDir = RNFS.CachesDirectoryPath;
-                              const oneMonthAgo = new Date();
-                              oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-                              try {
-                                const files = await RNFS.readDir(cacheDir);
-                                for (const file of files) {
-                                  const fileInfo = await RNFS.stat(file.path);
-                                  const fileCreationDate = new Date(fileInfo.ctime);
-                                  if (fileCreationDate < oneMonthAgo) {
-                                    await RNFS.unlink(file.path);
-                                  }
-                                }
-                              } catch (error) {
-                              }
-                            }, 500);
-                          }).catch(e => {
-                          });
-                        }).catch(function (error) {
-                        });
-                    }
+                    verMes(res);
                   },
                   error => {
                   },
@@ -226,11 +230,11 @@ function Listados() {
             },
           );
         });
-    };
-  } else {
-    dispatch(loadmes(mesActual));
-    //console.log('carga primera vez mes')
-  }
+      };
+    } else {
+      dispatch(loadmes(mesActual));
+      //console.log('carga primera vez mes')
+    }
   }, []);
 
   const filtro = useCallback((text) => {
@@ -281,9 +285,25 @@ function Listados() {
     };
   };
 
-  const like = (idimg, mes, playerid, nombre, problema, fecha) => {
+  const cargaItems =(res, conteoLikes, playerid, nombre, problema, fecha)=>{
     const player = playerid;
     const nameUsu = nombre;
+    if (res.rows.length > 0) {
+      const listax = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
+      console.log(listax);
+      axios.post(RUTA_LISTA_CINCO, {
+        data: listax,
+        emailusu: user.email
+      })
+        .then(respt => {
+          Notificarlikes(conteoLikes, problema, fecha, nameUsu, player);
+        }).catch(function (error) {
+        });
+    };
+  };
+
+  const like = (idimg, mes, playerid, nombre, problema, fecha) => {
+
     let formData = new FormData();
     formData.append("idimgx", idimg);
     axios.post(RUTA_LISTA_CUATRO, formData, {
@@ -306,7 +326,7 @@ function Listados() {
         setListaIni(sumaLike);
         db.transaction(txn => {
           txn.executeSql(
-            `INSERT INTO likes (idimg, mes)  VALUES (?,?)`,
+            `INSERT INTO likes (idimg, mes) VALUES (?,?)`,
             [idimg, mes],
             (sqlTxn, res) => {
               db.transaction(txn => {
@@ -314,33 +334,20 @@ function Listados() {
                   `SELECT * FROM likes ORDER BY id ASC`,
                   [],
                   (sqlTxn, res) => {
-                    let listax = [];
-                    if (res.rows.length > 0) {
-                      for (var i = 0; i < res.rows.length; i++) {
-                        listax.push(res.rows.item(i));
-                      }
-                      axios.post(RUTA_LISTA_CINCO, {
-                        data: listax,
-                        emailusu: user.email
-                      })
-                        .then(respt => {
-                          Notificarlikes(conteoLikes, problema, fecha, nameUsu, player);
-                        }).catch(function (error) {
-                        });
-                    };
+                    cargaItems(res, conteoLikes, playerid, nombre, problema, fecha);
                   },
                   error => {
 
                   },
                 );
               });
-
             },
             error => {
 
             },
           );
         });
+
       } else {
       }
     }).catch(function (error) {
@@ -365,38 +372,38 @@ function Listados() {
       id: borrar,
       adm: '0'
     }).then(res => {
-        setShowAlert(false);
-        if (res.data === 0) {
-          const listaMenos = listaIni.filter(listado => listado.idimg !== borrar)
-          setListaIni(listaMenos);
-          setToastServ('delete2');
-          if (listaMenos.length === 0) {
-            setTimeout(() => {
-              navigation.navigate('Home');
-            }, 4000);
-          }
-        } else if (res.data === 2) {
-          setToastServ('NoDelete');
-          const quitarIconBasura = listaIni.map(listado => {
-            if (listado.idimg === borrar) {
-              return {
-                ...listado,
-                conteolista: 2876
-              }
-            } else {
-              return listado
-            }
-
-          })
-          setListaIni(quitarIconBasura);
-          
-        } else if (res.data === 3) {
-          setToastServ('NoDeletedos');
+      setShowAlert(false);
+      if (res.data === 0) {
+        const listaMenos = listaIni.filter(listado => listado.idimg !== borrar)
+        setListaIni(listaMenos);
+        setToastServ('delete2');
+        if (listaMenos.length === 0) {
+          setTimeout(() => {
+            navigation.navigate('Home');
+          }, 4000);
         }
-       
-      }).catch(function (error) {
-        setToastServ('sinConexHome');
-      });
+      } else if (res.data === 2) {
+        setToastServ('NoDelete');
+        const quitarIconBasura = listaIni.map(listado => {
+          if (listado.idimg === borrar) {
+            return {
+              ...listado,
+              conteolista: 2876
+            }
+          } else {
+            return listado
+          }
+
+        })
+        setListaIni(quitarIconBasura);
+
+      } else if (res.data === 3) {
+        setToastServ('NoDeletedos');
+      }
+
+    }).catch(function (error) {
+      setToastServ('sinConexHome');
+    });
   };
 
   const cancel = () => {
@@ -584,25 +591,25 @@ function Listados() {
       </View>
 
       <AwesomeAlert
-          show={showAlert}
-          showProgress={false}
-          title="Atención"
-          message="¿Desea eliminar este evento?"
-          closeOnTouchOutside={true}
-          closeOnHardwareBackPress={false}
-          showCancelButton={true}
-          showConfirmButton={true}
-          cancelText="Cancelar"
-          confirmText=" Eliminar "
-          confirmButtonColor="#064B00"
-          cancelButtonColor="#FF0000"
-          onCancelPressed={() => {
-            cancel();
-          }}
-          onConfirmPressed={() => {
-            quitar();
-          }}
-        />
+        show={showAlert}
+        showProgress={false}
+        title="Atención"
+        message="¿Desea eliminar este evento?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        cancelText="Cancelar"
+        confirmText=" Eliminar "
+        confirmButtonColor="#064B00"
+        cancelButtonColor="#FF0000"
+        onCancelPressed={() => {
+          cancel();
+        }}
+        onConfirmPressed={() => {
+          quitar();
+        }}
+      />
 
 
       <ToastServicios dato={toastServ} />
