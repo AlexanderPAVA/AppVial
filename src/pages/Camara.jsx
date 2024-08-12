@@ -49,7 +49,7 @@ const RUTA_CAM_CUATRO = config.RUTA_CAM_CUATRO;
 
 const MaxCaracteres = 250;
 
-function Camara(){
+function Camara() {
 
   const route = useRoute();
   const navigation = useNavigation();
@@ -728,53 +728,228 @@ function Camara(){
     ImagePicker.openCamera({
       mediaType: 'video',
     }).then(image => {
-      if (image.duration >= 15000) {
-        setTime(380);
-      } else if (image.duration >= 13000 && image.duration < 14999) {
-        setTime(360);
-      } else if (image.duration >= 11000 && image.duration < 13999) {
-        setTime(340);
-      } else if (image.duration >= 9000 && image.duration < 10999) {
-        setTime(320);
-      } else if (image.duration >= 8000 && image.duration < 8999) {
-        setTime(290);
-      } else if (image.duration >= 7000 && image.duration < 7999) {
-        setTime(250);
-      } else if (image.duration >= 6000 && image.duration < 6999) {
-        setTime(210);
-      } else if (image.duration >= 5000 && image.duration < 5999) {
-        setTime(170);
-      } else if (image.duration >= 4000 && image.duration < 4999) {
-        setTime(140);
-      } else if (image.duration >= 3000 && image.duration < 3999) {
-        setTime(120);
-      } else if (image.duration >= 2000 && image.duration < 2999) {
-        setTime(90);
-      } else if (image.duration >= 1000 && image.duration < 1999) {
-        setTime(60);
+
+      const getTimeByDuration = (duration) => {
+        const durationMap = [
+          { min: 15000, time: 380 },
+          { min: 13000, time: 360 },
+          { min: 11000, time: 340 },
+          { min: 9000, time: 320 },
+          { min: 8000, time: 290 },
+          { min: 7000, time: 250 },
+          { min: 6000, time: 210 },
+          { min: 5000, time: 170 },
+          { min: 4000, time: 140 },
+          { min: 3000, time: 120 },
+          { min: 2000, time: 90 },
+          { min: 1000, time: 60 },
+        ];
+
+        for (const { min, time } of durationMap) {
+          if (duration >= min) {
+            return time;
+          }
+        }
+        return 0; // Valor predeterminado si no coincide
       };
-      if (image.width >= 4320) { // 540p  8K
-        const anchoimg = image.width / 8;
-        const altoimg = image.height / 8;
-        trimVideo(image.path, image.duration, anchoimg, altoimg);
-      } else if (image.width >= 2160 && image.width < 4320) { // 360p 4k
-        const anchoimg = image.width / 6;
-        const altoimg = image.height / 6;
-        trimVideo(image.path, image.duration, anchoimg, altoimg);
-      } else if (image.width >= 1080 && image.width < 2160) { // 540  HD 2K
-        const anchoimg = image.width / 3;
-        const altoimg = image.height / 3;
-        trimVideo(image.path, image.duration, anchoimg, altoimg);
-      } else {
-        const anchoimg = image.width / 2;
-        const altoimg = image.height / 2;
-        trimVideo(image.path, image.duration, anchoimg, altoimg);
+
+      const getTrimDimensions = (width, height) => {
+        if (width >= 4320) { // 540p  8K
+          return { anchoimg: width / 8, altoimg: height / 8 };
+        } else if (width >= 2160) { // 360p 4k
+          return { anchoimg: width / 6, altoimg: height / 6 };
+        } else if (width >= 1080) { // 540p HD 2K
+          return { anchoimg: width / 3, altoimg: height / 3 };
+        } else {
+          return { anchoimg: width / 2, altoimg: height / 2 };
+        }
+      };
+
+      // Uso de las funciones refactorizadas
+      const durationTime = getTimeByDuration(image.duration);
+      if (durationTime) {
+        setTime(durationTime);
       }
+
+      const { anchoimg, altoimg } = getTrimDimensions(image.width, image.height);
+      trimVideo(image.path, image.duration, anchoimg, altoimg);
+
+
+
     }).catch((e) => {
       if (e.code !== 'E_PICKER_CANCELLED') {
       }
     });
   };
+
+  const LoadingIndicator = ({ message }) => (
+    <View style={styles.centeredView}>
+      <ActivityIndicator size="large" color="#FCB213" />
+      <Text style={styles.loadingText}>{message}</Text>
+    </View>
+  );
+
+  const ZoneInfo = ({ zona, espere, fotoSize }) => (
+    <View style={styles.input2}>
+      {zona && (
+        <>
+          {espere && !fotoSize && <LoadingIndicator message={espere} />}
+          <Text style={styles.zoneText}>{zona}</Text>
+        </>
+      )}
+    </View>
+  );
+
+  const CameraButton = () => (
+    <View style={styles.cameraButtonContainer}>
+      <TouchableOpacity onPress={() => tomarFoto()}>
+        <Iconc name='camera' color="#FCB213" size={100} />
+      </TouchableOpacity>
+      <Text style={styles.tapToLoadText}>Toca para cargar imagen</Text>
+    </View>
+  );
+
+  const PhotoPreview = ({ fotoSize }) => (
+    <TouchableOpacity onPress={() => tomarFoto()}>
+      <Image
+        style={{
+          justifyContent: 'center',
+          alignSelf: 'center',
+          width: vistaFotoPantalla.anchoPantalla,
+          height: vistaFotoPantalla.altoPantalla,
+          borderRadius: 20,
+          borderColor: '#FCB213',
+          borderWidth: 2,
+        }}
+        source={{ uri: fotoSize }}
+      />
+      <Iconc name='camera' color="#FCB213" size={20} style={styles.cameraIcon} />
+    </TouchableOpacity>
+  );
+
+  const LoadingView = ({ message }) => (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#FCB213" />
+      <Text style={styles.loadingText}>{message}</Text>
+    </View>
+  );
+
+  const CustomSpinner = ({ visible, message }) => (
+    <Spinner
+      visible={visible}
+      color='#FCB213'
+      overlayColor='rgba(0, 0, 0, 1)'
+      textContent={message}
+      textStyle={styles.spinnerText}
+    />
+  );
+
+  const ConditionalRender = ({ verificarFoto, vercargaFoto, msjCamIni, loading }) => {
+    if (verificarFoto !== '' && vercargaFoto === 'nover') {
+      return <LoadingView message={msjCamIni} />;
+    } else {
+      return <CustomSpinner visible={loading} message={msjCamIni} />;
+    }
+  };
+
+  const CaracteresText = ({ caracteresRestantes }) => (
+    <Text style={styles.caracteres}>
+      Total de caracteres: <Text style={{ fontSize: 9, color: '#EBC529' }}>{caracteresRestantes}</Text>
+    </Text>
+  );
+
+  const ComentarioInput = ({ frase, setFrase }) => (
+    <TextInput
+      style={styles.input}
+      theme={{ colors: { onSurfaceVariant: '#A3A3A3' } }}
+      multiline={true}
+      numberOfLines={3}
+      onChangeText={setFrase}
+      value={frase}
+      placeholder="Ingrese comentario corto"
+      textColor="#000000"
+      maxLength={250}
+      borderColor='#FCB213'
+      borderWidth={2}
+    />
+  );
+
+  const EventoButton = ({ onPress, iconName, iconSize, label, isRounded }) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={[
+        styles.eventButton,
+        isRounded && styles.roundedButton,
+      ]}>
+        <View style={styles.eventButtonContent}>
+          {label === 'Accidente' ?
+            <Icons name={iconName} color="#FCB213" size={iconSize} />
+            :
+            <Iconx name={iconName} color="#FCB213" size={iconSize} style={{ marginBottom: 5 }} />
+          }
+          <Text style={styles.eventButtonText}>{label}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const EventoSelection = ({ setEvento }) => (
+    <View style={styles.eventSelectionContainer}>
+      <EventoButton
+        onPress={() => setEvento('Accidente')}
+        iconName='ambulance'
+        iconSize={25}
+        label="Accidente"
+
+      />
+      <EventoButton
+        onPress={() => setEvento('Reten')}
+        iconName='back-hand'
+        iconSize={27}
+        label="Retén"
+      />
+      <EventoButton
+        onPress={() => setEvento('Evento vial')}
+        iconName='report-problem'
+        iconSize={33}
+        label="Evento Vial"
+
+      />
+    </View>
+  );
+
+  const EventoSelectionVideo = ({ setEventoVideo }) => (
+    <View style={styles.eventSelectionContainer}>
+      <EventoButton
+        onPress={() => setEventoVideo('Accidente')}
+        iconName='ambulance'
+        iconSize={25}
+        label="Accidente"
+
+      />
+      <EventoButton
+        onPress={() => setEventoVideo('Reten')}
+        iconName='back-hand'
+        iconSize={27}
+        label="Retén"
+      />
+      <EventoButton
+        onPress={() => setEventoVideo('Evento vial')}
+        iconName='report-problem'
+        iconSize={33}
+        label="Evento Vial"
+
+      />
+    </View>
+  );
+
+  const GpsPrecisionInfo = ({ brujula2 }) => (
+    brujula2 === 'Baja' && (
+      <>
+        <Text style={styles.gpsText}>Precisión del GPS: <Text style={styles.gpsBoldText}>{brujula2}</Text></Text>
+        <Text style={styles.gpsText}>Cargue comentario de donde está ubicado</Text>
+      </>
+    )
+  );
 
   return (
     <>
@@ -823,243 +998,33 @@ function Camara(){
               <>
                 <View>
                   <View >
-                    {verificarFoto !== '' && vercargaFoto === 'nover' ?
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignItems: 'center',
-                          marginTop: 320
-                        }}
-                      >
-                        <ActivityIndicator size="large" color="#FCB213" />
-                        <Text style={{
-                          color: '#C1C1C1',
-                          fontSize: 15,
-                        }} >
-                          {msjCamIni}
-                        </Text>
-                      </View>
-                      :
-                      <Spinner
-                        visible={loading}
-                        color='#FCB213'
-                        overlayColor='rgba(0, 0, 0, 1)'
-                        textContent={msjCamIni}
-                        textStyle={{
-                          color: '#fff',
-                          fontSize: 15,
-                          marginTop: -30
-                        }}
-                      />
-                    }
-                    {fotoSize === '' || vercargaFoto === 'ver' ?
+
+                    <ConditionalRender
+                      verificarFoto={verificarFoto}
+                      vercargaFoto={vercargaFoto}
+                      msjCamIni={msjCamIni}
+                      loading={loading}
+                    />
+
+                    {fotoSize === '' || vercargaFoto === 'ver' ? (
+                      <CameraButton onPress={() => tomarFoto()} />
+                    ) : (
+                      verificarFoto === '' && (
+                        <PhotoPreview fotoSize={fotoSize} onPress={() => tomarFoto()} />
+                      )
+                    )}
+
+                    {verificarFoto === '' && <ZoneInfo zona={zona} espere={espere} fotoSize={fotoSize} />}
+
+                    {fotoSize !== '' && verificarFoto === '' && (
                       <>
-                        <View style={{
-                          justifyContent: 'center',
-                          alignSelf: 'center',
-                          marginTop: 120,
-                          marginBottom: 20
-                        }}>
-                          <TouchableOpacity
-                            onPress={() => tomarFoto()}>
-                            <Iconc name='camera' color="#FCB213" size={100} />
-                          </TouchableOpacity>
-                        </View>
-                        <View>
-                          {verificarFoto === '' ?
-                            <Text style={{
-                              color: '#fff',
-                              justifyContent: 'center',
-                              alignSelf: 'center', marginBottom: 50, fontSize: 11
-                            }}>Toca para cargar imagen</Text>
-                            : ''
-                          }
-                        </View>
+                        <CaracteresText caracteresRestantes={caracteresRestantes} />
+                        <ComentarioInput frase={frase} setFrase={setFrase} />
+                        <EventoSelection setEvento={setEvento} />
+                        <GpsPrecisionInfo brujula2={brujula2} />
                       </>
-                      : verificarFoto === '' ?
-                        <TouchableOpacity
-                          onPress={() => tomarFoto()}>
-                          <Image
-                            style={{
-                              justifyContent: 'center',
-                              alignSelf: 'center',
-                              width: vistaFotoPantalla.anchoPantalla,
-                              height: vistaFotoPantalla.altoPantalla,
-                              borderRadius: 20,
-                              borderColor: '#FCB213',
-                              borderWidth: 2,
-                            }}
-                            source={{ uri: fotoSize }}
-                          />
-                          <Iconc name='camera' color="#FCB213" size={20} style={{
-                            justifyContent: 'center',
-                            alignSelf: 'center',
-                            position: 'absolute',
-                            marginTop: 15,
-                            color: '#FCB213'
-                          }} />
-                        </TouchableOpacity>
-                        :
-                        ''
-                    }
+                    )}
 
-                    {verificarFoto === '' ?
-                      <View style={styles.input2} >
-                        {zona !== '' &&
-                          <>
-                            {espere !== '' && fotoSize === '' &&
-                              <View style={{ marginTop: 10 }}>
-                                <ActivityIndicator size="large" color="#FCB213" />
-                                <Text style={{
-                                  justifyContent: 'center',
-                                  alignSelf: 'center',
-                                  color: '#fff',
-                                  fontSize: 15,
-                                  marginTop: 10
-                                }}
-                                >{espere}</Text>
-                              </View>
-                            }
-                            <Text style={{
-                              color: '#CDCDCD',
-                              fontSize: 11,
-                              marginRight: 15,
-                              marginLeft: 15,
-                              padding: 5,
-                              fontWeight: 'bold'
-                            }}>
-                              {zona}
-                            </Text>
-                          </>
-                        }
-                      </View>
-                      : ''
-                    }
-
-                    {fotoSize !== '' && verificarFoto === '' ?
-                      <>
-                        <Text style={styles.caracteres} >Total de caracteres: <Text style={{ fontSize: 9, color: '#EBC529' }}> {caracteresRestantes}</Text></Text>
-                        <TextInput
-                          style={styles.input}
-                          theme={{ colors: { onSurfaceVariant: '#A3A3A3' }, }}
-                          multiline={true}
-                          numberOfLines={3}
-                          onChangeText={setFrase}
-                          value={frase}
-                          placeholder="Ingrese comentario corto"
-                          textColor="#000000"
-                          maxLength={250}
-                          borderColor='#FCB213'
-                          borderWidth={2}
-                        />
-                      </>
-                      :
-                      ''
-                    }
-
-                    {fotoSize !== '' && verificarFoto === '' ?
-                      <View
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginBottom: 70
-                        }}>
-                        <View style={{
-                          flexDirection: 'row',
-                          marginTop: -10
-                        }}>
-                          <TouchableOpacity
-                            onPress={() => setEvento('Accidente')}>
-                            <View style={{
-                              backgroundColor: '#000000',
-                              height: 70,
-                              width: 115,
-                              borderBottomLeftRadius: 25,
-                              borderTopLeftRadius: 25,
-                              justifyContent: 'center',
-                              borderColor: '#FCB213',
-                              borderWidth: 2,
-                            }}>
-                              <View style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                marginTop: 10
-                              }}>
-                                <Icons style={{ bottom: -2 }} name='ambulance' color="#FCB213" size={26} />
-                                <Text style={{
-                                  fontSize: 11,
-                                  position: 'absolute',
-                                  marginTop: 30,
-                                  color: '#fff'
-                                }}>Accidente</Text>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => setEvento('Reten')}>
-                            <View style={{
-                              backgroundColor: '#000000',
-                              height: 70,
-                              width: 90,
-                              justifyContent: 'center',
-                              borderColor: '#FCB213',
-                              borderWidth: 2,
-                            }}>
-                              <View style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                marginTop: 10
-                              }}>
-                                <Iconx name='back-hand' color="#FCB213" size={27} />
-                                <Text style={{
-                                  fontSize: 11,
-                                  position: 'absolute',
-                                  marginTop: 30,
-                                  color: '#fff'
-                                }}>Retén</Text>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => setEvento('Evento vial')}>
-                            <View style={{
-                              backgroundColor: '#000000',
-                              height: 70,
-                              width: 115,
-                              borderBottomRightRadius: 25,
-                              borderTopRightRadius: 25,
-                              justifyContent: 'center',
-                              borderColor: '#FCB213',
-                              borderWidth: 2,
-                            }}>
-                              <View style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                marginTop: 10
-                              }}>
-                                <Iconx style={{ bottom: 3 }} name='report-problem' color="#FCB213" size={35} />
-                                <Text style={{
-                                  fontSize: 11,
-                                  position: 'absolute',
-                                  marginTop: 30,
-                                  color: '#fff'
-
-                                }}>Evento Vial</Text>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                        </View>
-                        {
-                          brujula2 === 'Baja' &&
-                          <>
-                            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10, marginTop: 5 }}>Precisión del GPS: <Text style={{ fontWeight: 'bold', fontSize: 13 }}> {brujula2}</Text></Text>
-                            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10 }}>Cargue comentario de donde está ubicado</Text>
-                          </>
-                        }
-                      </View>
-                      :
-                      ''
-                    }
                   </View>
                 </View>
 
@@ -1156,133 +1121,11 @@ function Camara(){
                         }}
                         source={{ uri: videoThumbnail }}
                       />
-                      <View style={styles.input2} >
-                        {zona !== '' &&
-                          <Text style={{
-                            color: '#fff',
-                            fontSize: 11,
-                            marginRight: 15,
-                            marginLeft: 15,
-                            padding: 5,
-                            fontWeight: 'bold'
-                          }}>
-                            {zona}
-                          </Text>
-                        }
-                      </View>
-                      <Text style={styles.caracteres} >Total de caracteres: <Text style={{ fontSize: 9, color: '#EBC529' }}> {caracteresRestantes}</Text></Text>
-                      <TextInput
-                        style={styles.input}
-                        theme={{ colors: { onSurfaceVariant: '#A3A3A3' }, }}
-                        multiline={true}
-                        numberOfLines={3}
-                        onChangeText={setFrase}
-                        value={frase}
-                        placeholder="Ingrese comentario corto"
-                        textColor="#000000"
-                        maxLength={250}
-                        borderColor='#FCB213'
-                        borderWidth={2}
-                      />
-                      <View
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginBottom: 70
-                        }}>
-                        <View style={{
-                          flexDirection: 'row',
-                          marginTop: -10
-                        }}>
-                          <TouchableOpacity
-                            onPress={() => setEventoVideo('Accidente')}>
-                            <View style={{
-                              backgroundColor: '#000000',
-                              height: 70,
-                              width: 115,
-                              borderBottomLeftRadius: 25,
-                              borderTopLeftRadius: 25,
-                              justifyContent: 'center',
-                              borderColor: '#FCB213',
-                              borderWidth: 2,
-                            }}>
-                              <View style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                marginTop: 10
-                              }}>
-                                <Icons style={{ bottom: -2 }} name='ambulance' color="#FCB213" size={26} />
-                                <Text style={{
-                                  fontSize: 11,
-                                  position: 'absolute',
-                                  marginTop: 30,
-                                  color: '#fff'
-                                }}>Accidente</Text>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => setEventoVideo('Reten')}>
-                            <View style={{
-                              backgroundColor: '#000000',
-                              height: 70,
-                              width: 90,
-                              justifyContent: 'center',
-                              borderColor: '#FCB213',
-                              borderWidth: 2,
-                            }}>
-                              <View style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                marginTop: 10
-                              }}>
-                                <Iconx name='back-hand' color="#FCB213" size={27} />
-                                <Text style={{
-                                  fontSize: 11,
-                                  position: 'absolute',
-                                  marginTop: 30,
-                                  color: '#fff'
-                                }}>Retén</Text>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => setEventoVideo('Evento vial')}>
-                            <View style={{
-                              backgroundColor: '#000000',
-                              height: 70,
-                              width: 115,
-                              borderBottomRightRadius: 25,
-                              borderTopRightRadius: 25,
-                              justifyContent: 'center',
-                              borderColor: '#FCB213',
-                              borderWidth: 2,
-                            }}>
-                              <View style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                marginTop: 10
-                              }}>
-                                <Iconx style={{ bottom: 3 }} name='report-problem' color="#FCB213" size={35} />
-                                <Text style={{
-                                  fontSize: 11,
-                                  position: 'absolute',
-                                  marginTop: 30,
-                                  color: '#fff'
-
-                                }}>Evento Vial</Text>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                        </View>
-                        {
-                          brujula2 === 'Baja' &&
-                          <>
-                            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10, marginTop: 5 }}>Precisión del GPS: <Text style={{ fontWeight: 'bold', fontSize: 13 }}> {brujula2}</Text></Text>
-                            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10 }}>Cargue comentario de donde está ubicado</Text>
-                          </>
-                        }
-                      </View>
+                      <ZoneInfo zona={zona} espere={espere} fotoSize={fotoSize} />
+                      <CaracteresText caracteresRestantes={caracteresRestantes} />
+                      <ComentarioInput frase={frase} setFrase={setFrase} />
+                      <EventoSelectionVideo setEventoVideo={setEventoVideo} />
+                      <GpsPrecisionInfo brujula2={brujula2} />
                     </>
                 : ''
           }
@@ -1361,5 +1204,105 @@ const styles = StyleSheet.create({
     fontSize: 9,
     marginTop: 3,
     color: '#fff'
-  }
+  },
+  loadingText: {
+    color: '#C1C1C1',
+    fontSize: 15,
+  },
+  zoneText: {
+    color: '#CDCDCD',
+    fontSize: 12,
+    marginRight: 15,
+    marginLeft: 15,
+    padding: 5,
+    fontWeight: 'bold',
+  },
+  centeredView: {
+    justifyContent: "center",
+    alignItems: 'center',
+    marginTop: '2%',
+  },
+  cameraButtonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 120,
+    marginBottom: 20,
+  },
+  tapToLoadText: {
+    color: '#fff',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 50,
+    fontSize: 11,
+  },
+  cameraIcon: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    position: 'absolute',
+    marginTop: 15,
+    color: '#FCB213',
+  },
+  spinnerText: {
+    color: '#fff',
+    fontSize: 15,
+    marginTop: -30,
+  },
+  input2: {
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: 'center',
+    marginTop: 320,
+  },
+  loadingText: {
+    color: '#C1C1C1',
+    fontSize: 15,
+  },
+  spinnerText: {
+    color: '#fff',
+    fontSize: 15,
+    marginTop: -30,
+  },
+  eventButton: {
+    backgroundColor: '#000000',
+    height: 70,
+    width: 110,
+    justifyContent: 'center',
+    borderColor: '#FCB213',
+    borderWidth: 2,
+  },
+  roundedButton: {
+    borderRadius: 25,
+  },
+  eventButtonContent: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  eventButtonText: {
+    fontSize: 11,
+    position: 'absolute',
+    marginTop: 30,
+    color: '#fff',
+  },
+  eventSelectionContainer: {
+    flexDirection: 'row',
+    marginTop: -10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 70,
+  },
+  gpsText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 10,
+    marginTop: 5,
+  },
+  gpsBoldText: {
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
 });
