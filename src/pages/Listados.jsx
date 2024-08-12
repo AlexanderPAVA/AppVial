@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+vimport React, { useEffect, useState, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -285,9 +285,9 @@ function Listados() {
     };
   };
 
-  const cargaItems =(res, conteoLikes, playerid, nombre, problema, fecha)=>{
-    const player = playerid;
-    const nameUsu = nombre;
+  const cargaItemsLista =(res, conteoLikes, playerid, nombre, problema, fecha)=>{
+    const players = playerid;
+    const nameUsus = nombre;
     if (res.rows.length > 0) {
       const listax = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
       console.log(listax);
@@ -296,7 +296,7 @@ function Listados() {
         emailusu: user.email
       })
         .then(respt => {
-          Notificarlikes(conteoLikes, problema, fecha, nameUsu, player);
+          Notificarlikes(conteoLikes, problema, fecha, nameUsus, players);
         }).catch(function (error) {
         });
     };
@@ -334,7 +334,7 @@ function Listados() {
                   `SELECT * FROM likes ORDER BY id ASC`,
                   [],
                   (sqlTxn, res) => {
-                    cargaItems(res, conteoLikes, playerid, nombre, problema, fecha);
+                    cargaItemsLista(res, conteoLikes, playerid, nombre, problema, fecha);
                   },
                   error => {
 
