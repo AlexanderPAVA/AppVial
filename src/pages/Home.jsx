@@ -246,7 +246,7 @@ function Home({ navigation }) {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           console.log("Permiso concedido");
         } else {
-        console.log("Permiso denegado");
+          console.log("Permiso denegado");
         }
       } catch (err) {
         //console.warn(err);
@@ -659,13 +659,72 @@ function Home({ navigation }) {
   };
 
   const infoFoto = (num) => {
-    if(num === 1){
+    if (num === 1) {
       setToastServ('sinFoto');
-    }else{
+    } else {
       setToastServ('cambioFoto');
     }
-   
+
   };
+
+  const CargandoUbicacion = () => (
+    <Text style={styles.depto2}>
+      Cargando ubicación{'\n'}espere..
+    </Text>
+  );
+
+  const RegistrarUsuario = () => (
+    <Text style={styles.depto2}>
+      Registre un usuario{'\n'}Ingrese en Configuración
+    </Text>
+  );
+
+  const GpsPrecision = ({ conex, reten, bloqueoButtons, color, compassAccuracy }) => (
+    conex !== 0 && reten !== null && bloqueoButtons === false && (
+      <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10, marginBottom: -20 }}>
+        Precisión del GPS:  <Text style={{ color, textAlign: 'center', fontWeight: 'bold', fontSize: 11 }}>{compassAccuracy}</Text>
+      </Text>
+    )
+  );
+
+  const MostrarReten = ({ reten, conex, bloqueoButtons, color, compassAccuracy }) => (
+    <>
+      <Text style={styles.depto}>{reten}</Text>
+      <GpsPrecision
+        conex={conex}
+        reten={reten}
+        bloqueoButtons={bloqueoButtons}
+        color={color}
+        compassAccuracy={compassAccuracy}
+      />
+    </>
+  );
+
+  const UbicacionSinDepartamento = () => (
+    <Text style={styles.sindepto2}>
+      Sin Departamento{'\n'}Estás en una zona sin cobertura
+    </Text>
+  );
+
+  const UbicacionSinInformacionPais = () => (
+    <Text style={styles.sindepto2}>
+      Sin información del país
+    </Text>
+  );
+
+  const TeEncuentrasEn = ({ pais }) => (
+    <Text style={styles.sindepto}>
+      <Text style={{ color: '#808080' }}>Te encuentras en</Text>{'\n'}<Text style={{ color: '#FCB213' }}>{pais}</Text>
+    </Text>
+  );
+
+  const MensajeNotificacion = ({ enterNoti, reten, msjNoti, msjCam }) => (
+    enterNoti !== 0 && reten !== 'Colombia' ?
+      <Text style={styles.opencam}>{msjNoti}</Text>
+      : msjCam !== '' && reten !== 'Colombia' ?
+        <Text style={styles.opencam}>{msjCam}</Text>
+        : null
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -685,48 +744,30 @@ function Home({ navigation }) {
             <Image style={styles.imgLogo2}
               source={require('../imgs/reporto.png')}
             />
+            {reten === null && primvez !== 0 ? (
+              user !== null ? <CargandoUbicacion /> : <RegistrarUsuario />
+            ) : reten !== 'Colombia' && pais === 'Colombia' ? (
+              <MostrarReten
+                reten={reten}
+                conex={conex}
+                bloqueoButtons={bloqueoButtons}
+                color={color}
+                compassAccuracy={compassAccuracy}
+              />
+            ) : reten === 'Colombia' && pais !== 'Colombia' && mostrarsinpais === 0 ? (
+              <TeEncuentrasEn pais={pais} />
+            ) : pais === 'Colombia' ? (
+              <UbicacionSinDepartamento />
+            ) : mostrarsinpais === 1 ? (
+              <UbicacionSinInformacionPais />
+            ) : null}
 
-            {reten === null && primvez !== 0 ?
-              user !== null ?
-                <Text style={styles.depto2}>
-                  Cargando ubicación{'\n'}espere..
-                </Text>
-                :
-                <Text style={styles.depto2}>
-                  Registre un usuario{'\n'}Ingrese en Configuración
-                </Text>
-              :
-              reten !== 'Colombia' && pais === 'Colombia' ?
-                <>
-                  <Text style={styles.depto}>{reten}</Text>
-                  {conex !== 0 && reten !== null && bloqueoButtons === false &&
-                    <Text style={{ color: '#fff', textAlign: 'center', fontSize: 10, marginBottom: -20 }}>Precisión del GPS:  <Text style={{ color: color, textAlign: 'center', fontWeight: 'bold', fontSize: 11 }}>{compassAccuracy}</Text></Text>
-                  }
-                </>
-                : reten === 'Colombia' && pais !== 'Colombia' && mostrarsinpais === 0 ?
-                  <Text style={styles.sindepto}>
-                    <Text style={{ color: '#808080' }}>Te encuentras en</Text>{'\n'}<Text style={{ color: '#FCB213' }}>{pais}</Text>
-                  </Text>
-                  : pais === 'Colombia' ?
-                    <Text style={styles.sindepto2}>
-                      Sin Departamento{'\n'}Estás en una zona sin cobertura
-                    </Text>
-                    : mostrarsinpais === 1 ?
-                      <Text style={styles.sindepto2}>
-                        Sin información del país
-                      </Text>
-                      : ''
-            }
-            {enterNoti !== 0 && reten !== 'Colombia' ?
-              <Text style={styles.opencam}>
-                {msjNoti}
-              </Text>
-              : msjCam !== '' && reten !== 'Colombia' ?
-                <Text style={styles.opencam}>
-                  {msjCam}
-                </Text>
-                : ''
-            }
+            <MensajeNotificacion
+              enterNoti={enterNoti}
+              reten={reten}
+              msjNoti={msjNoti}
+              msjCam={msjCam}
+            />
 
           </View>
           <View style={styles.section}>
@@ -783,22 +824,22 @@ function Home({ navigation }) {
       <View style={styles.itemFooter}>
         <View style={styles.itemFooter2}>
           {user !== null ?
-          <TouchableOpacity onPress={() => infoFoto(2)}>
-            <FastImage
-              source={{
-                uri: RUTA_IMG_USER + user.foto,
-                priority: FastImage.priority.normal
-              }}
-              resizeMode={FastImage.resizeMode.stretch}
-              contentContainerStyle={{ padding: 20 }}
-              style={styles.imgFooterUser}
-            />
+            <TouchableOpacity onPress={() => infoFoto(2)}>
+              <FastImage
+                source={{
+                  uri: RUTA_IMG_USER + user.foto,
+                  priority: FastImage.priority.normal
+                }}
+                resizeMode={FastImage.resizeMode.stretch}
+                contentContainerStyle={{ padding: 20 }}
+                style={styles.imgFooterUser}
+              />
             </TouchableOpacity>
             :
             <TouchableOpacity onPress={() => infoFoto(1)}>
-            <Image style={styles.imgFooterUserLocal}
-              source={require('../imgs/user.png')}
-            />
+              <Image style={styles.imgFooterUserLocal}
+                source={require('../imgs/user.png')}
+              />
             </TouchableOpacity>
           }
           <TouchableOpacity onPress={() => setModalVisible(true)}>
