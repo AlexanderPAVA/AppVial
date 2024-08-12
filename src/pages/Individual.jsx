@@ -98,8 +98,6 @@ function Individual({ route, navigation }) {
         `SELECT * FROM likes ORDER BY id ASC`,
         [],
         (sqlTxn, res) => {
-          let listax = [];
-         
             if (res.rows.length > 0) {
               const listaz = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
               console.log(listaz);
@@ -153,9 +151,24 @@ function Individual({ route, navigation }) {
     };
   };
 
-  const like = (idimg, mes, playerid, nombre, problema, fecha) => {
+  const cargaItems =(res, conteoLikes, playerid, nombre, problema, fecha)=>{
     const player = playerid;
     const nameUsu = nombre;
+    if (res.rows.length > 0) {
+      const listax = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
+      console.log(listax);
+      axios.post(RUTA_INDIV_CUATRO, {
+        data: listax,
+        emailusu: user.email
+      })
+        .then(resp => {
+          Notificarlikes(conteoLikes, problema, fecha, nameUsu, player);
+        });
+    };
+  }
+
+  const like = (idimg, mes, playerid, nombre, problema, fecha) => {
+    
     let formData = new FormData();
     formData.append("idimgx", idimg);
     axios.post(RUTA_INDIV_TRES, formData, {
@@ -180,18 +193,7 @@ function Individual({ route, navigation }) {
                   `SELECT * FROM likes ORDER BY id ASC`,
                   [],
                   (sqlTxn, res) => {
-                    let listax = [];
-                    if (res.rows.length > 0) {
-                      const listax = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
-                      console.log(listax);
-                      axios.post(RUTA_INDIV_CUATRO, {
-                        data: listax,
-                        emailusu: user.email
-                      })
-                        .then(resp => {
-                          Notificarlikes(conteoLikes, problema, fecha, nameUsu, player);
-                        });
-                    };
+                    cargaItems(res, conteoLikes, playerid, nombre, problema, fecha);
                   },
                   error => {
                   },
