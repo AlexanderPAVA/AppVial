@@ -1242,24 +1242,10 @@ const styles = StyleSheet.create({
     marginTop: 15,
     color: '#FCB213',
   },
-  spinnerText: {
-    color: '#fff',
-    fontSize: 15,
-    marginTop: -30,
-  },
-  input2: {
-    marginTop: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   loadingContainer: {
     justifyContent: "center",
     alignItems: 'center',
     marginTop: 320,
-  },
-  loadingText: {
-    color: '#C1C1C1',
-    fontSize: 15,
   },
   spinnerText: {
     color: '#fff',
