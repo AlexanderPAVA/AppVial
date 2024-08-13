@@ -5,6 +5,7 @@ import {
     ScrollView,
     TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import Iconx from 'react-native-vector-icons/MaterialIcons';
 import config from '../config';
@@ -105,7 +106,14 @@ function ScrollImg({ item, verModalLista, ratio, winAncho }) {
             }
         </ScrollView>
     )
-}
+};
+
+ScrollImg.propTypes = {
+    item: PropTypes.object.isRequired,
+    verModalLista: PropTypes.func.isRequired,
+    ratio: PropTypes.number.isRequired,
+    winAncho : PropTypes.number.isRequired
+  };
 
 export default ScrollImg;
 
