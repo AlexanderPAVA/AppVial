@@ -6,6 +6,7 @@ import {
     Modal,
     TouchableOpacity
 } from 'react-native';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { TextInput } from 'react-native-paper';
@@ -107,10 +108,10 @@ function ModalNombre({ modalVisibles, setModalVisibles }) {
                             flexDirection: 'row',
                         }}>
                             <TouchableOpacity onPress={() => salir()} style={styles.closeModalButton3}>
-                                <Text style={{  marginTop: 5, fontWeight: 'bold', color: '#FF0000' }}>   Salir    </Text>
+                                <Text style={{ marginTop: 5, fontWeight: 'bold', color: '#FF0000' }}>   Salir    </Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => cambiar()} style={styles.closeModalButton2}>
-                                <Text style={{  marginTop: 5, fontWeight: 'bold', color: '#064B00' }}>  Cambiar  </Text>
+                                <Text style={{ marginTop: 5, fontWeight: 'bold', color: '#064B00' }}>  Cambiar  </Text>
                             </TouchableOpacity>
                         </View>
 
@@ -121,7 +122,12 @@ function ModalNombre({ modalVisibles, setModalVisibles }) {
 
         </View>
     )
-}
+};
+
+ModalNombre.propTypes = {
+    modalVisibles: PropTypes.bool.isRequired,
+    setModalVisibles: PropTypes.func.isRequired,
+  };
 
 export default ModalNombre;
 
