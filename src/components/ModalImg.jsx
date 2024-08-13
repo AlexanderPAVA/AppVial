@@ -6,6 +6,7 @@ import {
   Modal,
   TouchableOpacity
 } from 'react-native';
+import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import Iconm from 'react-native-vector-icons/AntDesign';
@@ -52,7 +53,16 @@ function ModalImg({ modalVisible, setModalVisible, anchoPantalla, altoModal, rat
         </Modal>
     </View>
   )
-}
+};
+
+ModalImg.propTypes = {
+  modalVisible: PropTypes.bool.isRequired,
+  setModalVisible: PropTypes.bool.isRequired,
+  itemImg: PropTypes.string.isRequired,
+  anchoPantalla: PropTypes.number.isRequired,
+  altoModal: PropTypes.number.isRequired,
+  ratio2: PropTypes.number.isRequired,
+};
 
 export default ModalImg;
 
