@@ -96,6 +96,7 @@ ModalCamara.propTypes = {
   modalVisible: PropTypes.bool.isRequired,
   salirModal: PropTypes.func.isRequired,
   tomarFoto: PropTypes.func.isRequired,
+  tomarVideo: PropTypes.func.isRequired,
   brujula2: PropTypes.string.isRequired,
 };
 
