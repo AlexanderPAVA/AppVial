@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     ActivityIndicator
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Video from 'react-native-video';
 import Slider from '@react-native-community/slider';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
@@ -163,7 +164,7 @@ function ModalVideo({ modalVisible2, setModalVisible2, video, altoModal, anchoPa
                 transparent={false}
                 visible={modalVisible2}
             >
-                <ScrollView style={{ backgroundColor: '#000' }}>
+                <ScrollView style={{ backgroundColor: '#000000' }}>
                     <View style={{
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -210,7 +211,7 @@ function ModalVideo({ modalVisible2, setModalVisible2, video, altoModal, anchoPa
                                         value={currentTime}
                                         onValueChange={onSeek}
                                         minimumTrackTintColor="#FFFFFF"
-                                        maximumTrackTintColor="#000000"
+                                        maximumTrackTintColor="#000000000"
                                         thumbTintColor="#FFFFFF"
                                     />
                                     <Text style={styles.timeText}>{formatTime(duration)}</Text>
@@ -222,7 +223,7 @@ function ModalVideo({ modalVisible2, setModalVisible2, video, altoModal, anchoPa
                         }
                     </View>
                 </ScrollView>
-                <View style={{ backgroundColor: '#000', }}>
+                <View style={{ backgroundColor: '#000000000', }}>
                     {loading === 1 &&
                         <TouchableOpacity
                             style={styles.buttonUno}
@@ -241,14 +242,24 @@ function ModalVideo({ modalVisible2, setModalVisible2, video, altoModal, anchoPa
             </Modal>
         </View>
     )
-}
+};
+
+ModalVideo.propTypes = {
+    modalVisible2: PropTypes.bool.isRequired,
+    setModalVisible2: PropTypes.func.isRequired,
+    video: PropTypes.string.isRequired,
+    anchoPantalla: PropTypes.number.isRequired,
+    altoModal: PropTypes.number.isRequired,
+    ratio2: PropTypes.number.isRequired,
+    idItem: PropTypes.string.isRequired,
+  };
 
 export default ModalVideo;
 
 const styles = StyleSheet.create({
     buttonUno: {
         position: 'absolute',
-        backgroundColor: '#000',
+        backgroundColor: '#000000',
         bottom: 8,
         right: 90,
         height: 30,
@@ -260,7 +271,7 @@ const styles = StyleSheet.create({
     },
     buttonDos: {
         position: 'absolute',
-        backgroundColor: '#000',
+        backgroundColor: '#000000',
         bottom: 8,
         right: 20,
         height: 30,
