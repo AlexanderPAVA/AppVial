@@ -33,6 +33,7 @@ import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import ModalNombre from '../components/ModalNombre';
 import {AlertBox} from 'react-native-alertbox';
 import {fire} from 'react-native-alertbox';
+import { useNavigation } from '@react-navigation/native';
 
 const GOOGLE_KEY = config.GOOGLE_KEY;
 const RUTA_IMG_USER = config.RUTA_IMG_USER;
@@ -44,7 +45,9 @@ const RUTA_HOME_UNO = config.RUTA_HOME_UNO;
 
 const db = openDatabase({ name: "appLikes" });
 
-function LoginUser({ navigation }) {
+function LoginUser() {
+
+  const navigation = useNavigation();
 
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.user);
@@ -55,7 +58,7 @@ function LoginUser({ navigation }) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibles, setModalVisibles] = useState(false);
-  const [ToastServ, setToastServ] = useState('');
+  const [toastServ, setToastServ] = useState('');
   const [isSwitchOnUno, setIsSwitchOnUno] = useState(camara);
   const [isSwitchOnDos, setIsSwitchOnDos] = useState(notiUp);
   const [espere, setEspere] = useState('');
@@ -683,7 +686,7 @@ function LoginUser({ navigation }) {
         </View>
         <AlertBox />
       </SafeAreaView>
-      <ToastServicios dato={ToastServ} />
+      <ToastServicios dato={toastServ} />
     </>
   )
 }
