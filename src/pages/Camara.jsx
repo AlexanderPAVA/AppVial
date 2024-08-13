@@ -10,9 +10,6 @@ import {
   LogBox,
   PermissionsAndroid
 } from 'react-native';
-
-import PropTypes from 'prop-types';
-
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { TextInput, ActivityIndicator } from 'react-native-paper';
 import Geolocation from 'react-native-geolocation-service';
@@ -94,14 +91,6 @@ function Camara() {
 
   const [showAlerts, setShowAlerts] = useState(false);
 
-  console.log(brujula)
-
-  ModalCamara.propTypes = {
-    modalVisible: PropTypes.bool.isRequired,
-    salirModal: PropTypes.func.isRequired,
-    tomarFoto: PropTypes.func.isRequired,
-    brujula2: PropTypes.string.isRequired,
-  };
 
   const titulo = () => {
     return (
@@ -965,6 +954,19 @@ function Camara() {
   const primaryMsj2Style = { ...baseStyle, fontSize: 20, marginLeft: 5 };
   const secondaryMsj2Style = { ...baseStyle, fontSize: 16, marginLeft: 5 };
 
+
+  const IconButton = ({ onPress, iconName, iconColor, iconSize }) => (
+    <TouchableOpacity onPress={onPress}>
+      <Iconc name={iconName} color={iconColor} size={iconSize} />
+    </TouchableOpacity>
+  );
+  
+  const Label = ({ text, style }) => (
+    <Text style={[styles.label, style]}>
+      {text}
+    </Text>
+  );
+
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -1049,33 +1051,24 @@ function Camara() {
               </>
               : fotoVideo === 2 ?
                 loadVideo === 0 ?
-                  <View style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: 120,
-                    marginBottom: 20
-                  }}>
-                    <TouchableOpacity
-                      onPress={() => tomarVideo()}>
-                      <Iconc name='video-camera' color="#FCB213" size={100} />
-                    </TouchableOpacity>
-                    <Text style={{
-                      justifyContent: 'center',
-                      alignSelf: 'center',
-                      marginBottom: 50,
-                      fontSize: 11
-                    }}>Toca para tomar video</Text>
-                    <Text style={{
-                      color: '#CDCDCD',
-                      fontSize: 11,
-                      marginRight: 15,
-                      marginLeft: 15,
-                      padding: 5,
-                      fontWeight: 'bold'
-                    }}>
-                      {zona}
-                    </Text>
-                  </View>
+                 
+                <View style={styles.container2}>
+                <IconButton 
+                  onPress={tomarVideo} 
+                  iconName="video-camera" 
+                  iconColor="#FCB213" 
+                  iconSize={100} 
+                />
+                <Label 
+                  text="Toca para tomar video" 
+                  style={styles.videoText} 
+                />
+                <Label 
+                  text={zona} 
+                  style={styles.zonaText} 
+                />
+              </View>
+
                   : loadVideo === 1 ?
                     <View
                       style={{
@@ -1288,4 +1281,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 13,
   },
+  container2: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 120,
+    marginBottom: 20,
+  },
+  videoText: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 50,
+    fontSize: 11,
+  },
+  zonaText: {
+    color: '#CDCDCD',
+    fontSize: 11,
+    marginRight: 15,
+    marginLeft: 15,
+    padding: 5,
+    fontWeight: 'bold',
+  },
+  label: {
+    textAlign: 'center',
+  }
 });
