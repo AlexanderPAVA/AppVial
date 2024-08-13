@@ -618,98 +618,37 @@ function Camara() {
   const trimVideo = async (rutaVideo, duracion, anchoi, altoi) => {
     setLoadVideo(1);
     setIsCompressing(true);
-    if (duracion >= 15000) {
-      setToastServ('hayRecorte');
-      setTextoRecorte('Redimensión y recorte de video');
-      setTimeout(() => {
-        setTextoRecorte('Terminando Compresión');
-      }, 24000);
-      setTimeout(() => {
-        setTextoRecorte('Compresión de video');
-      }, 14000);
-    } else if (duracion >= 12000 && duracion < 15000) {
-      setTextoRecorte('Redimensionando video');
-      setTimeout(() => {
-        setTextoRecorte('Terminando Compresión');
-      }, 19000);
-      setTimeout(() => {
-        setTextoRecorte('Compresión de video');
-      }, 11000);
-    } else if (duracion >= 9000 && duracion < 12000) {
-      setTextoRecorte('Redimensionando video');
-      setTimeout(() => {
-        setTextoRecorte('Terminando Compresión');
-      }, 16000);
-      setTimeout(() => {
-        setTextoRecorte('Compresión de video');
-      }, 8000);
-    } else if (duracion >= 6000 && duracion < 9000) {
-      setTextoRecorte('Redimensionando video');
-      setTimeout(() => {
-        setTextoRecorte('Terminando Compresión');
-      }, 12000);
-      setTimeout(() => {
-        setTextoRecorte('Compresión de video');
-      }, 5000);
-    } else if (duracion >= 3000 && duracion < 6000) {
-      setTextoRecorte('Redimensionando video');
-      setTimeout(() => {
-        setTextoRecorte('Terminando Compresión');
-      }, 9000);
-      setTimeout(() => {
-        setTextoRecorte('Compresión de video');
-      }, 3000);
-    } else if (duracion < 3000) {
-      setTextoRecorte('Redimensionando video');
-      setTimeout(() => {
-        setTextoRecorte('Terminando Compresión');
-      }, 7000);
-      setTimeout(() => {
-        setTextoRecorte('Compresión de video');
-      }, 2000);
+  
+    const compressionStages = [
+      { duration: 15000, initialText: 'Redimensión y recorte de video', endText: 'Terminando Compresión', finalText: 'Compresión de video', compressionTime: 8000 },
+      { duration: 12000, initialText: 'Redimensionando video', endText: 'Terminando Compresión', finalText: 'Compresión de video', compressionTime: 7000 },
+      { duration: 9000,  initialText: 'Redimensionando video', endText: 'Terminando Compresión', finalText: 'Compresión de video', compressionTime: 6000 },
+      { duration: 6000,  initialText: 'Redimensionando video', endText: 'Terminando Compresión', finalText: 'Compresión de video', compressionTime: 5000 },
+      { duration: 3000,  initialText: 'Redimensionando video', endText: 'Terminando Compresión', finalText: 'Compresión de video', compressionTime: 4000 },
+      { duration: 0,     initialText: 'Redimensionando video', endText: 'Terminando Compresión', finalText: 'Compresión de video', compressionTime: 3000 }
+    ];
+  
+    const stage = compressionStages.find(stage => duracion >= stage.duration);
+  
+    if (stage) {
+      setTextoRecorte(stage.initialText);
+      setTimeout(() => setTextoRecorte(stage.endText), stage.compressionTime + 10000);
+      setTimeout(() => setTextoRecorte(stage.finalText), stage.compressionTime + 2000);
     }
-    const timeSeg = duracion;
+  
     try {
-      const videoPath = rutaVideo;
-      const startTime = 0;
-      const duration = timeSeg;
-      const anchos = anchoi;
-      const altos = altoi;
-      const videoCompress = await VideoManager.trimVideo(videoPath, startTime, duration, anchos, altos);
+      const videoCompress = await VideoManager.trimVideo(rutaVideo, 0, duracion, anchoi, altoi);
       if (videoCompress) {
         setIsCompressing(false);
         setMsjCamIni('Ajustando audio');
         miniatura(videoCompress);
-        if (timeSeg < 3000) {
-          setTimeout(() => {
-            setLoadVideo(videoCompress);
-          }, 3000);
-        } else if (timeSeg < 6000 && timeSeg >= 3000) {
-          setTimeout(() => {
-            setLoadVideo(videoCompress);
-          }, 4000);
-        } else if (timeSeg < 9000 && timeSeg >= 6000) {
-          setTimeout(() => {
-            setLoadVideo(videoCompress);
-          }, 5000);
-        } else if (timeSeg < 12000 && timeSeg >= 9000) {
-          setTimeout(() => {
-            setLoadVideo(videoCompress);
-          }, 6000);
-        } else if (timeSeg < 15000 && timeSeg >= 12000) {
-          setTimeout(() => {
-            setLoadVideo(videoCompress);
-          }, 7000);
-        } else if (timeSeg >= 15000) {
-          setTimeout(() => {
-            setLoadVideo(videoCompress);
-          }, 8000);
-        };
-      };
+        setTimeout(() => setLoadVideo(videoCompress), stage.compressionTime);
+      }
     } catch (error) {
       console.error('Error al recortar el video:', error);
     }
   };
+  
 
   const tomarVideo = () => {
     setFotoVideo(2);
