@@ -1,19 +1,21 @@
 import React, { useEffect }  from 'react';
 import { WebView } from 'react-native-webview';
 import {
-  Text
+  Text,
+  View
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const MyWebView = ({ navigation }) => {
-
+const MyWebView = () => {
+  const navigation = useNavigation();
   const titulo = () => {
     return (
-      <>
+      <View>
         <Text style={{
           fontSize: 1,
           color: '#000000',
         }}></Text>
-      </>
+      </View>
     )
   };
 
@@ -25,7 +27,7 @@ const MyWebView = ({ navigation }) => {
       headerTintColor: '#fff',
       headerRight: () => (
         <Text style={{
-          color: 'white',
+          color: '#fff',
           fontSize: 14,
           fontWeight: 'bold',
         }}>Políticas y Condiciones</Text>
