@@ -1,4 +1,4 @@
-vimport React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -30,17 +30,16 @@ import { loadmes } from '../redux/slices/CargaMes';
 import ImagePicker from 'react-native-image-crop-picker';
 import { loadpricarga } from '../redux/slices/PrimeraVezMapa';
 import config from '../config';
-import { Notificarlikes } from '../components/Notificarlikes';
 import ScrollImg from '../components/ScrollImg';
 import RNFS from 'react-native-fs';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { CargarListas } from '../components/CargarListas';
 
 const RUTA_LISTA_UNO = config.RUTA_LISTA_UNO;
 const RUTA_LISTA_DOS = config.RUTA_LISTA_DOS;
 const RUTA_LISTA_TRES = config.RUTA_LISTA_TRES;
 const RUTA_LISTA_CUATRO = config.RUTA_LISTA_CUATRO;
-const RUTA_LISTA_CINCO = config.RUTA_LISTA_CINCO;
 const RUTA_LISTA_SEIS = config.RUTA_LISTA_SEIS;
 const RUTA_LISTA_SIETE = config.RUTA_LISTA_SIETE;
 const RUTA_IMG_USER = config.RUTA_IMG_USER;
@@ -285,22 +284,7 @@ function Listados() {
     };
   };
 
-  const cargaItemsLista =(res, conteoLikes, playerid, nombre, problema, fecha)=>{
-    const players = playerid;
-    const nameUsus = nombre;
-    if (res.rows.length > 0) {
-      const listax = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
-      console.log(listax);
-      axios.post(RUTA_LISTA_CINCO, {
-        data: listax,
-        emailusu: user.email
-      })
-        .then(respt => {
-          Notificarlikes(conteoLikes, problema, fecha, nameUsus, players);
-        }).catch(function (error) {
-        });
-    };
-  };
+
 
   const like = (idimg, mes, playerid, nombre, problema, fecha) => {
 
@@ -334,7 +318,7 @@ function Listados() {
                   `SELECT * FROM likes ORDER BY id ASC`,
                   [],
                   (sqlTxn, res) => {
-                    cargaItemsLista(res, conteoLikes, playerid, nombre, problema, fecha);
+                    CargarListas(res, conteoLikes, playerid, nombre, problema, fecha, user.email);
                   },
                   error => {
 
@@ -368,21 +352,25 @@ function Listados() {
   };
 
   const quitar = () => {
+    setShowAlert(false);
     axios.post(RUTA_LISTA_SEIS, {
       id: borrar,
       adm: '0'
     }).then(res => {
-      setShowAlert(false);
+     
       if (res.data === 0) {
         const listaMenos = listaIni.filter(listado => listado.idimg !== borrar)
         setListaIni(listaMenos);
-        setToastServ('delete2');
+        setTimeout(() => {
+          setToastServ('delete2');
+        }, 1000);
         if (listaMenos.length === 0) {
           setTimeout(() => {
             navigation.navigate('Home');
           }, 4000);
         }
       } else if (res.data === 2) {
+        setShowAlert(false);
         setToastServ('NoDelete');
         const quitarIconBasura = listaIni.map(listado => {
           if (listado.idimg === borrar) {
@@ -398,7 +386,9 @@ function Listados() {
         setListaIni(quitarIconBasura);
 
       } else if (res.data === 3) {
-        setToastServ('NoDeletedos');
+        setTimeout(() => {
+          setToastServ('NoDeletedos');
+        }, 1000);
       }
 
     }).catch(function (error) {
