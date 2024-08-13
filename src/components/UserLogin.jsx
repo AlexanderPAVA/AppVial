@@ -5,6 +5,7 @@ import {
     View,
     Image,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
 
 function UserLogin({ idPlay, logIn, espere }) {
@@ -27,7 +28,13 @@ function UserLogin({ idPlay, logIn, espere }) {
             }
         </View>
     )
-}
+};
+
+UserLogin.propTypes = {
+    idPlay: PropTypes.string.isRequired,
+    logIn: PropTypes.func.isRequired,
+    espere: PropTypes.string.isRequired,
+  };
 
 export default UserLogin;
 const styles = StyleSheet.create({
