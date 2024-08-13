@@ -150,7 +150,7 @@ function ModalReporte({ modalVisible3, setModalVisible3, reporte }) {
 ModalReporte.propTypes = {
     modalVisible3: PropTypes.bool.isRequired,
     setModalVisible3: PropTypes.func.isRequired,
-    reporte: PropTypes.object.isRequired
+    reporte: PropTypes.string.isRequired
   };
 
 export default ModalReporte;
