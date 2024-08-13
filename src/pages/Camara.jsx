@@ -951,6 +951,20 @@ function Camara() {
     )
   );
 
+  const renderText = (condition, primaryText, secondaryText, primaryStyle, secondaryStyle) => {
+  return (
+    <Text style={condition ? primaryStyle : secondaryStyle}>
+      {condition ? primaryText : secondaryText}
+    </Text>
+  );
+};
+
+  const baseStyle = { color: '#fff' };
+  const primaryTextStyle = { ...baseStyle, fontSize: 20 };
+  const secondaryTextStyle = { ...baseStyle, fontSize: 15 };
+  const primaryMsj2Style = { ...baseStyle, fontSize: 20, marginLeft: 5 };
+  const secondaryMsj2Style = { ...baseStyle, fontSize: 16, marginLeft: 5 };
+
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -960,39 +974,22 @@ function Camara() {
               <ActivityIndicator animating={true} size="large" color="#FCB213" style={{
                 marginTop: 300
               }} />
-              {enterNoti !== 0 ?
-                <Text style={{
-                  color: '#fff',
-                  fontSize: 15,
-                }} >
-                  Cargando Notificación
-                </Text>
-                :
-                <Text style={{
-                  color: '#fff',
-                  fontSize: 20,
-                }} >
-                  Cargando Gps
-                </Text>
-              }
-              {msj2 === '' ?
-
-                <Text style={{
-                  color: '#fff',
-                  fontSize: 16,
-                  marginLeft: 5
-                }} >
-                  Espere...
-                </Text>
-                :
-                <Text style={{
-                  color: '#fff',
-                  fontSize: 20,
-                  marginLeft: 5
-                }} >
-                  Verifique conexión
-                </Text>
-              }
+              <>
+                {renderText(
+                  enterNoti !== 0,
+                  'Cargando Notificación',
+                  'Cargando Gps',
+                  secondaryTextStyle,
+                  primaryTextStyle
+                )}
+                {renderText(
+                  msj2 === '',
+                  'Espere...',
+                  'Verifique conexión',
+                  secondaryMsj2Style,
+                  primaryMsj2Style
+                )}
+              </>
             </View>
             : fotoVideo === 1 ?
               <>
