@@ -324,232 +324,251 @@ function Camara() {
     });
   };
 
+  // subirFoto
+
+  const handleUploadResponse = (res, image, evento, evevial) => {
+    setMsjCamIni('');
+    if (res.data === 'primera') {
+      processFirstUpload(evevial, image);
+    } else if (res.data === 'segunda') {
+      processSecondUpload(image);
+    } else if (res.data === 'tercera') {
+      processThirdUpload(image);
+    } else if (res.data === 'e1' || res.data === 'e2' || res.data === 'e3') {
+      retryUpload(image, evento);
+    } else {
+      navigation.navigate('Home');
+    }
+  };
+  
+  const processFirstUpload = (evevial, image) => {
+    setVerificarFoto(fotoSize);
+    setLanzarNoti({ problema: evevial, zona, frase, codigo });
+    setMsj('Llevas 1 de 3 Fotos');
+    setShowAlerts(true);
+    dispatch(loadpricarga(1));
+    BorrarImageUrl(image);
+  };
+  
+  const processSecondUpload = (image) => {
+    setVerificarFoto(fotoSize);
+    setMsj('Llevas 2 de 3 Fotos');
+    setShowAlerts(true);
+    BorrarImageUrl(image);
+  };
+  
+  const processThirdUpload = (image) => {
+    setPosicion('');
+    setVerificarFoto(fotoSize);
+    setVisible2(!visible2);
+    setMsj2('Mira el evento en el listado');
+    setTitleDialogo('Carga completada');
+    BorrarImageUrl(image);
+    Notificaciones(lanzarNoti.problema, lanzarNoti.zona, lanzarNoti.frase, lanzarNoti.codigo, user.email, reten);
+    setTimeout(() => {
+      navigation.navigate('Home');
+      setVisible2(!visible2);
+    }, 2200);
+  };
+  
+  const retryUpload = (image, evento) => {
+    setToastServ('errorCarga');
+    setTimeout(() => subirFoto(image, evento), 3000);
+  };
+  
+  const uploadImage = (url, formData, onSuccess) => {
+    axios.post(url, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      transformRequest: formData => formData,
+    }).then(res => onSuccess(res))
+      .catch(err => retryUpload(formData.get('image').uri, formData.get('problem')));
+  };
+  
+  const prepareFormData = (image, problema, additionalData = {}) => {
+    const localUri = image;
+    const filename = localUri.split('/').pop();
+    const match = /\.(\w+)$/.exec(filename);
+    const type = match ? `image/${match[1]}` : `image`;
+    const formData = new FormData();
+    formData.append('image', { uri: localUri, name: filename, type });
+    formData.append("email", user.email);
+    formData.append("codigo", codigo);
+    Object.keys(additionalData).forEach(key => {
+      formData.append(key, additionalData[key]);
+    });
+    return formData;
+  };
+  
   const subirFoto = (dataImg, problema) => {
-    if (pais === 'Colombia') {
-      setVercargaFoto('nover');
-      setMsjCamIni('Cargardo Evento');
-      setTimeout(() => {
-        setMsjCamIni('Ubíquese donde haya señal');
-      }, 8000);
-      setTimeout(() => {
-        setMsjCamIni('Señal Débil. Espere');
-      }, 5000);
-      const evevial = problema;
-      const image = dataImg;
-      if (verificarFoto === '') {
-        setLoading(true);
-        if (image !== verificarFoto) {
-          if (problema !== undefined && problema !== '') {
-            let localUri = image;
-            let filename = localUri.split('/').pop();
-            let match = /\.(\w+)$/.exec(filename);
-            let type = match ? `image/${match[1]}` : `image`;
-            let formData = new FormData();
-            formData.append('image', { uri: localUri, name: filename, type });
-            formData.append("nombre", user.nombre);
-            formData.append("problem", problema);
-            formData.append("zona", zona);
-            formData.append("frase", frase);
-            formData.append("email", user.email);
-            formData.append("lat", latitude);
-            formData.append("lng", longitude);
-            formData.append("signal", user.idsignal);
-            formData.append("codigo", codigo);
-            formData.append("ancho", fotoSizeAncho);
-            formData.append("alto", fotoSizeAlto);
-            axios.post(RUTA_CAM_DOS, formData, {
-              headers: { 'Content-Type': 'multipart/form-data' },
-              transformRequest: formData => formData,
-            }).then(res => {
-              setLoading(false);
-              setMsjCamIni('');
-              if (res.data === 'primera') {
-                setVerificarFoto(fotoSize);
-                setLanzarNoti({
-                  problema: evevial,
-                  zona: zona,
-                  frase: frase,
-                  codigo: codigo
-                });
-                setMsj('Llevas 1 de 3 Fotos');
-                setShowAlerts(true);
-                dispatch(loadpricarga(1));
-                BorrarImageUrl(image);
-              } else if (res.data === 'e1') {
-                setToastServ('errorCarga');
-                setTimeout(() => {
-                  subirFoto(image, evento);
-                }, 3000);
-              } else if (res.data === 'existe') {
-                navigation.navigate('Home');
-              } else {
-                navigation.navigate('Home');
-              }
-            }).catch(err => {
-              subirFoto(image, evento);
-            });
-          } else {
-            setLoading(false);
-            subirFoto(image, evento);
-          }
-        } else {
-          setToastServ('otrafoto');
-        }
-      } else {
-
-        if (image !== verificarFoto) {
-          let localUri = image;
-          let filename = localUri.split('/').pop();
-          let match = /\.(\w+)$/.exec(filename);
-          let type = match ? `image/${match[1]}` : `image`;
-          let formData = new FormData();
-          formData.append('image', { uri: localUri, name: filename, type });
-          formData.append("email", user.email);
-          formData.append("codigo", codigo);
-          axios.post(RUTA_CAM_TRES, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-            transformRequest: formData => formData,
-          }).then(res => {
-            setMsjCamIni('');
-            if (res.data === 'segunda') {
-              setVerificarFoto(fotoSize);
-              setMsj('Llevas 2 de 3 Fotos');
-              setShowAlerts(true);
-              BorrarImageUrl(image);
-            } else if (res.data === 'tercera') {
-              setPosicion('')
-              setVerificarFoto(fotoSize);
-              setVisible2(!visible2);
-              setMsj2('Mira el evento en el listado');
-              setTitleDialogo('Carga completada');
-              BorrarImageUrl(image);
-              Notificaciones(lanzarNoti.problema, lanzarNoti.zona, lanzarNoti.frase, lanzarNoti.codigo, user.email, reten);
-              setTimeout(() => {
-                navigation.navigate('Home');
-                setVisible2(!visible2);
-              }, 2200);
-            } else if (res.data === 'e2' || res.data === 'e3') {
-              setToastServ('errorCarga');
-              setTimeout(() => {
-                subirFoto(image, evento);
-              }, 3000);
-            } else {
-              navigation.navigate('Home');
-            }
-          }).catch(err => {
-            subirFoto(image, evento);
-          });
-        } else {
-          setToastServ('otrafoto');
-        }
-      };
-
-    } else {
-      setVisible2(!visible2);
-      setMsj2('Este servicio aplica cuando estés en el territorio colombiano.\n\nThis service applies when you are in Colombian territory.');
-      setTitleDialogo('Lo sentimos');
-      BorrarImageUrl(dataImg);
-      setTimeout(() => {
-        navigation.navigate('Home');
-        setVisible2(!visible2);
-      }, 6000);
+    if (pais !== 'Colombia') {
+      showOutsideColombiaMessage(dataImg);
+      return;
     }
-  };
-
-  const subirVideo = (problema) => {
-    if (pais === 'Colombia') {
-      setLoadVideo(1);
-      setMsjCamIni('Cargardo Evento');
-      setTimeout(() => {
-        setMsjCamIni('Reconectando... espere');
-      }, 14000);
-      setTimeout(() => {
-        setMsjCamIni('Cargando... Espere');
-      }, 7000);
-      const evevial = problema;
-      let localUri = loadVideo;
-      let localUri2 = videoThumbnail;
-      let filename = localUri.split('/').pop();
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[1]}` : `image`;
-      let formData = new FormData();
-      formData.append('video', { uri: localUri, name: 'video.mp4', type: 'video/mp4' });
-      formData.append("nombre", user.nombre);
-      formData.append("problem", evevial);
-      formData.append("zona", zona);
-      formData.append("frase", frase);
-      formData.append("email", user.email);
-      formData.append("lat", latitude);
-      formData.append("lng", longitude);
-      formData.append("signal", user.idsignal);
-      formData.append("codigo", codigo);
-      formData.append("ancho", fotoSizeAncho);
-      formData.append("alto", fotoSizeAlto);
-      formData.append('image', { uri: localUri2, name: filename, type });
-      axios.post(RUTA_CAM_CUATRO, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        transformRequest: formData => formData,
-      }).then(res => {
-        setMsjCamIni('');
-        if (res.data === 'primera') {
-          setVisible2(!visible2);
-          setMsj2('Mira el evento en el listado');
-          setTitleDialogo('Carga completada');
-          BorrarVideosUrl(localUri);
-          Notificaciones(evevial, zona, frase, codigo, user.email, reten);
-          setTimeout(() => {
-            BorrarFotoUrl(localUri2);
-          }, 1000);
-          setTimeout(() => {
-            setLoadVideo(0);
-            dispatch(loadpricarga(1));
-            navigation.navigate('Home');
-            setVisible2(!visible2);
-          }, 2200);
-        } else if (res.data === 'primera2') {
-          setVisible2(!visible2);
-          setMsj2('En breve recibirás la notificación de tu evento');
-          setTitleDialogo('Carga en proceso');
-          BorrarVideosUrl(localUri);
-          NotificacionesDos(evevial, zona, frase, codigo, user.email, reten);
-          setTimeout(() => {
-            BorrarFotoUrl(localUri2);
-          }, 2000);
-          setTimeout(() => {
-            setLoadVideo(0);
-            dispatch(loadpricarga(1));
-            navigation.navigate('Home');
-            setVisible2(!visible2);
-          }, 5000);
-        } else if (res.data === 'e1') {
-          setLoadVideo(0);
-          navigation.navigate('Home');
-        } else if (res.data === 'reload') {
-          setToastServ('errorCarga');
-          setTimeout(() => {
-            subirVideo(eventoVideo);
-          }, 3000);
-        } else {
-          setLoadVideo(0);
-          navigation.navigate('Home');
-        }
-      }).catch(err => {
-        subirVideo(eventoVideo);
-      });
-
-    } else {
-      setVisible2(!visible2);
-      setMsj2('Este servicio aplica cuando estés en el territorio colombiano.\n\nThis service applies when you are in Colombian territory.');
-      setTitleDialogo('Lo sentimos');
-      BorrarVideosUrl(loadVideo);
-      setTimeout(() => {
-        BorrarFotoUrl(videoThumbnail);
-        navigation.navigate('Home');
-        setVisible2(!visible2);
-      }, 6000);
+  
+    setVercargaFoto('nover');
+    setMsjCamIni('Cargardo Evento');
+    setTimeout(() => setMsjCamIni('Ubíquese donde haya señal'), 8000);
+    setTimeout(() => setMsjCamIni('Señal Débil. Espere'), 5000);
+  
+    if (verificarFoto !== '' && dataImg === verificarFoto) {
+      setToastServ('otrafoto');
+      return;
     }
+  
+    setLoading(true);
+    const formData = prepareFormData(dataImg, problema, {
+      nombre: user.nombre,
+      problem: problema,
+      zona,
+      frase,
+      lat: latitude,
+      lng: longitude,
+      signal: user.idsignal,
+      ancho: fotoSizeAncho,
+      alto: fotoSizeAlto
+    });
+  
+    const url = verificarFoto === '' ? RUTA_CAM_DOS : RUTA_CAM_TRES;
+    uploadImage(url, formData, res => handleUploadResponse(res, dataImg, problema, problema));
   };
+  
+  const showOutsideColombiaMessage = (dataImg) => {
+    setVisible2(!visible2);
+    setMsj2('Este servicio aplica cuando estés en el territorio colombiano.\n\nThis service applies when you are in Colombian territory.');
+    setTitleDialogo('Lo sentimos');
+    BorrarImageUrl(dataImg);
+    setTimeout(() => {
+      navigation.navigate('Home');
+      setVisible2(!visible2);
+    }, 6000);
+  };
+  
 
+ // subir video
+
+ const manejarRespuestaServidor = (res, evevial, localUri, localUri2) => {
+  setMsjCamIni('');
+  switch (res.data) {
+      case 'primera':
+          procesarCargaCompletada(localUri, localUri2, evevial);
+          break;
+      case 'primera2':
+          procesarCargaEnProceso(localUri, localUri2, evevial);
+          break;
+      case 'e1':
+      case 'reload':
+          manejarErrorCarga();
+          break;
+      default:
+          finalizarCarga();
+  }
+};
+
+const procesarCargaCompletada = (localUri, localUri2, evevial) => {
+  setVisible2(true);
+  setMsj2('Mira el evento en el listado');
+  setTitleDialogo('Carga completada');
+  BorrarVideosUrl(localUri);
+  Notificaciones(evevial, zona, frase, codigo, user.email, reten);
+  limpiarDatosCargados(localUri2);
+};
+
+const procesarCargaEnProceso = (localUri, localUri2, evevial) => {
+  setVisible2(true);
+  setMsj2('En breve recibirás la notificación de tu evento');
+  setTitleDialogo('Carga en proceso');
+  BorrarVideosUrl(localUri);
+  NotificacionesDos(evevial, zona, frase, codigo, user.email, reten);
+  limpiarDatosCargados(localUri2, 5000);
+};
+
+const manejarErrorCarga = () => {
+  setLoadVideo(0);
+  setToastServ('errorCarga');
+  setTimeout(() => {
+      subirVideo(eventoVideo);
+  }, 3000);
+};
+
+const limpiarDatosCargados = (localUri2, delay = 2200) => {
+  setTimeout(() => {
+      BorrarFotoUrl(localUri2);
+      setLoadVideo(0);
+      dispatch(loadpricarga(1));
+      navigation.navigate('Home');
+      setVisible2(false);
+  }, delay);
+};
+
+const prepararFormularioVideo = (evevial, localUri, localUri2) => {
+  let filename = localUri.split('/').pop();
+  let match = /\.(\w+)$/.exec(filename);
+  let type = match ? `image/${match[1]}` : `image`;
+  let formData = new FormData();
+  formData.append('video', { uri: localUri, name: 'video.mp4', type: 'video/mp4' });
+  formData.append('image', { uri: localUri2, name: filename, type });
+  formData.append("nombre", user.nombre);
+  formData.append("problem", evevial);
+  formData.append("zona", zona);
+  formData.append("frase", frase);
+  formData.append("email", user.email);
+  formData.append("lat", latitude);
+  formData.append("lng", longitude);
+  formData.append("signal", user.idsignal);
+  formData.append("codigo", codigo);
+  formData.append("ancho", fotoSizeAncho);
+  formData.append("alto", fotoSizeAlto);
+  return formData;
+};
+
+const subirVideo = (problema) => {
+  if (pais !== 'Colombia') {
+      manejarErrorPais();
+      return;
+  }
+
+  setLoadVideo(1);
+  setMsjCamIni('Cargardo Evento');
+  establecerMensajesCargando();
+
+  const evevial = problema;
+  const localUri = loadVideo;
+  const localUri2 = videoThumbnail;
+  const formData = prepararFormularioVideo(evevial, localUri, localUri2);
+
+  axios.post(RUTA_CAM_CUATRO, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      transformRequest: formData => formData,
+  }).then(res => {
+      manejarRespuestaServidor(res, evevial, localUri, localUri2);
+  }).catch(err => {
+      subirVideo(eventoVideo);
+  });
+};
+
+const manejarErrorPais = () => {
+  setVisible2(true);
+  setMsj2('Este servicio aplica cuando estés en el territorio colombiano.\n\nThis service applies when you are in Colombian territory.');
+  setTitleDialogo('Lo sentimos');
+  BorrarVideosUrl(loadVideo);
+  setTimeout(() => {
+      BorrarFotoUrl(videoThumbnail);
+      navigation.navigate('Home');
+      setVisible2(false);
+  }, 6000);
+};
+
+const establecerMensajesCargando = () => {
+  setTimeout(() => {
+      setMsjCamIni('Reconectando... espere');
+  }, 14000);
+  setTimeout(() => {
+      setMsjCamIni('Cargando... Espere');
+  }, 7000);
+};
+
+ // ----
+  
   useEffect(() => {
     if (evento !== '') {
       selectButton();
