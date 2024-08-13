@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import config from '../config';
+import PropTypes from 'prop-types';
 import ToastServicios from './ToastServicios';
 
 const API_KEY = config.API_KEY;
@@ -67,7 +68,7 @@ function ModalSancion({ modalVisible4, setModalVisible4, borrar, playId, navigat
                     setModalVisible4(false);
                 }, 5000);
             }
-          
+           
         }).catch(function (error) {
             setToastServ('sinConexHome');
         });
@@ -107,7 +108,15 @@ function ModalSancion({ modalVisible4, setModalVisible4, borrar, playId, navigat
             </Modal>
         </View>
     )
-}
+};
+
+ModalSancion.propTypes = {
+    modalVisible4: PropTypes.bool.isRequired,
+    setModalVisible4: PropTypes.func.isRequired,
+    borrar: PropTypes.string.isRequired,
+    playId: PropTypes.string.isRequired,
+    navigation: PropTypes.object.isRequired,
+  };
 
 export default ModalSancion;
 
