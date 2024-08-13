@@ -23,15 +23,14 @@ import ModalReporte from '../components/ModalReporte';
 import ToastServicios from '../components/ToastServicios';
 import config from '../config';
 import ModalSancion from '../components/ModalSancion';
-import { Notificarlikes } from '../components/Notificarlikes';
 import ScrollImg from '../components/ScrollImg';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { CargarListas } from '../components/CargarListas';
 
 
 const RUTA_IMG_USER = config.RUTA_IMG_USER;
 const RUTA_INDIV_UNO = config.RUTA_INDIV_UNO;
 const RUTA_INDIV_TRES = config.RUTA_INDIV_TRES;
-const RUTA_INDIV_CUATRO = config.RUTA_INDIV_CUATRO;
 const RUTA_INDIV_CINCO = config.RUTA_INDIV_CINCO;
 const NO_DELETE_ITEM = config.NO_DELETE_ITEM;
 
@@ -154,21 +153,6 @@ const loadLike =(res)=>{
     };
   };
 
-  const cargaItems =(res, conteoLikes, playerid, nombre, problema, fecha)=>{
-    const player = playerid;
-    const nameUsu = nombre;
-    if (res.rows.length > 0) {
-      const listax = Array.from({ length: res.rows.length }).map((_, i) => res.rows.item(i));
-      console.log(listax);
-      axios.post(RUTA_INDIV_CUATRO, {
-        data: listax,
-        emailusu: user.email
-      })
-        .then(resp => {
-          Notificarlikes(conteoLikes, problema, fecha, nameUsu, player);
-        });
-    };
-  }
 
   const like = (idimg, mes, playerid, nombre, problema, fecha) => {
     
@@ -196,7 +180,7 @@ const loadLike =(res)=>{
                   `SELECT * FROM likes ORDER BY id ASC`,
                   [],
                   (sqlTxn, res) => {
-                    cargaItems(res, conteoLikes, playerid, nombre, problema, fecha);
+                    CargarListas(res, conteoLikes, playerid, nombre, problema, fecha, user.email);
                   },
                   error => {
                   },
