@@ -112,6 +112,15 @@ function ListaReporte() {
     navigation.navigate('Home');
   };
 
+  const renderEmptyState = () => (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <TouchableOpacity onPress={() => salir()}>
+        <Icon name='emoji-sad' color="#FCB213" size={60} style={{ textAlign: 'center' }} />
+        <Text style={{ color: '#fff', fontSize: 13, textAlign: 'center', marginTop: 15 }}>No hay reportes para mostrar</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   const renderList = ({ item, index }) => {
     return (
       <TouchableOpacity onPress={() => verItem(item.codigo, item.emailusu)}>
@@ -138,32 +147,23 @@ function ListaReporte() {
               Espere...
             </Text>
           </View>
-          : lista.length !== 0 ?
-            <FlashList refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                title="Refrescando Lista"
-                tintColor="#fff"
-                titleColor="#fff"
-              />
-            }
-              data={lista}
-              keyExtractor={(item, index) => `key-${item.id, index}`}
-              renderItem={renderList}
-              estimatedItemSize={50}
+          : 
+          <FlashList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              title="Refrescando Lista"
+              tintColor="#fff"
+              titleColor="#fff"
             />
-            :
-            <View style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <TouchableOpacity onPress={() => salir()}>
-                <Icon name='emoji-sad' color="#FCB213" size={60} style={{ textAlign: 'center' }} />
-                <Text style={{ color: '#fff', fontSize: 13, textAlign: 'center', marginTop: 15 }}>No hay reportes para mostrar</Text>
-              </TouchableOpacity>
-            </View>
+          }
+          data={lista}
+          keyExtractor={(item, index) => `key-${item.id}-${index}`}
+          renderItem={renderList}
+          estimatedItemSize={50}
+          ListEmptyComponent={renderEmptyState} // Use ListEmptyComponent for empty state
+        />
       }
       <ToastServicios dato={ToastServ} />
     </SafeAreaView>
