@@ -20,7 +20,9 @@ const RUTA_NOTIS = config.RUTA_NOTIS;
 
 function ModalReporte({ modalVisible3, setModalVisible3, reporte }) {
 
-    const { codigo, emailusu } = reporte;
+console.log(reporte);
+
+    const {codigo, emailusu } = reporte;
     const [checked, setChecked] = useState(false);
     const [ToastServ, setToastServ] = useState('');
     const [msj, setMsj] = useState('');
@@ -150,7 +152,6 @@ function ModalReporte({ modalVisible3, setModalVisible3, reporte }) {
 ModalReporte.propTypes = {
     modalVisible3: PropTypes.bool.isRequired,
     setModalVisible3: PropTypes.func.isRequired,
-    reporte: PropTypes.string.isRequired
   };
 
 export default ModalReporte;
