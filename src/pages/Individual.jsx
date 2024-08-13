@@ -270,164 +270,170 @@ const loadLike =(res)=>{
 
   const ratio = win.width / item.ancho;
 
+  const UserHeader = ({ imguser, nombre, fecha }) => (
+    <View style={{ marginTop: 10 }}>
+      <FastImage
+        source={{ uri: imguser, priority: FastImage.priority.normal }}
+        resizeMode={FastImage.resizeMode.stretch}
+        style={{
+          width: 40,
+          height: 40,
+          marginTop: 10,
+          marginLeft: 5,
+          borderRadius: 25,
+          borderColor: '#FCB213',
+          borderWidth: 1,
+        }}
+      />
+      <Text style={{ position: 'absolute', top: '10%', fontSize: 13, color: '#fff', marginLeft: 57 }}>{nombre}</Text>
+      <Text style={{ position: 'absolute', top: '60%', fontSize: 10, color: '#CDCDCD', marginLeft: 57 }}>{fecha}</Text>
+    </View>
+  );
+
+  const PostDetails = ({ zona, frase }) => (
+    <View>
+      <Text style={{ fontSize: 11, color: '#CDCDCD', marginLeft: 5, marginTop: 5, padding: 5 }}>{zona}</Text>
+      {frase !== '' && (
+        <Text style={{ fontSize: 13, color: '#fff', marginTop: 5, marginBottom: 10, padding: 15, textAlign: 'justify' }}>
+          {frase}
+        </Text>
+      )}
+    </View>
+  );
+  
+
+  const PostActions = ({
+    item, likes, like, reportar, compartir, eliminar, sancion, user, rango
+  }) => (
+    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 10, marginBottom: 20 }}>
+      {item.like || item.idimg === likes ? (
+        <Image source={require("../imgs/asbdos.png")} style={{ marginLeft: 4, width: 27, height: 26, marginTop: 5 }} />
+      ) : (
+        <TouchableOpacity onPress={() => like(item.idimg, item.mes, item.playerid, item.nombre, item.problem, item.fecha)}>
+          <Image source={require("../imgs/asbuno.png")} style={{ marginLeft: 4, width: 27, height: 26, marginTop: 5 }} />
+        </TouchableOpacity>
+      )}
+      <Text style={{ fontSize: 10, color: '#fff', marginLeft: 0 }}>{item.megusta}</Text>
+      <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18 }}>
+        {item.formato === 'foto' ? 'Vistas:' : 'Reprod:'} <Text style={{ color: '#fff' }}>{item.vistas}</Text>
+      </Text>
+      {(sancion.tiempoRestante !== '0' || sancion.veces < '3') && (
+        <TouchableOpacity onPress={() => reportar(item.emailusu, item.codigo)}>
+          <Text style={{
+            top: -5, fontSize: 8, color: '#9B9B9B', marginLeft: 20, borderRadius: 5,
+            borderColor: '#808080', borderWidth: 1, marginTop: 10
+          }}>Reportar</Text>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity onPress={() => compartir(item.imagen, item.imagendos, item.imagentres, item.problem, item.fecha, item.zona, item.frase, item.formato, item.video)}>
+        <Iconsh style={{ marginLeft: 25, marginTop: -3 }} name='share-outline' color="#FCB213" size={37} />
+      </TouchableOpacity>
+      {rango === 'adm' || (item.emailusu === user.email && item.conteolista > 10078) ? (
+        <TouchableOpacity onPress={() => eliminar(item.idimg, item.playerid)}>
+          <Icon style={{ marginLeft: 20 }} name='delete' color={rango === 'adm' ? "#FBA000" : "#FF0000"} size={28} />
+        </TouchableOpacity>
+      ) : null}
+    </View>
+  ); 
+
+  const Modals = ({
+    modalVisible, setModalVisible, anchoPantalla, altoModal, ratio2, itemImg,
+    modalVisible2, setModalVisible2, video, itemid,
+    modalVisible3, setModalVisible3, reporte,
+    modalVisible4, setModalVisible4, borrar, playId, navigation
+  }) => (
+    <View>
+      <ModalImg
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        anchoPantalla={anchoPantalla}
+        altoModal={altoModal}
+        ratio2={ratio2}
+        itemImg={itemImg}
+      />
+      <ModalVideo
+        modalVisible2={modalVisible2}
+        setModalVisible2={setModalVisible2}
+        video={video}
+        altoModal={altoModal}
+        anchoPantalla={anchoPantalla}
+        ratio2={ratio2}
+        idItem={itemid}
+      />
+      <ModalReporte
+        modalVisible3={modalVisible3}
+        setModalVisible3={setModalVisible3}
+        reporte={reporte}
+      />
+      <ModalSancion
+        modalVisible4={modalVisible4}
+        setModalVisible4={setModalVisible4}
+        borrar={borrar}
+        playId={playId}
+        navigation={navigation}
+      />
+    </View>
+  );
+  
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View>
-          <View style={{
-            marginTop: 10
-          }}>
-            <FastImage
-              source={{
-                uri: RUTA_IMG_USER + item.imguser,
-                priority: FastImage.priority.normal
-              }}
-
-              resizeMode={FastImage.resizeMode.stretch}
-              contentContainerStyle={{ padding: 20 }}
-              style={{
-                width: 40,
-                height: 40,
-                marginTop: 10,
-                marginLeft: 5,
-                borderRadius: 25,
-                borderColor: '#FCB213',
-                borderWidth: 1
-              }} />
-            <Text style={{ position: 'absolute', top: '10%', fontSize: 13, color: '#fff', marginLeft: 57, }}>{item.nombre} </Text>
-            <Text style={{ position: 'absolute', top: '60%', fontSize: 10, color: '#CDCDCD', marginLeft: 57, }}>{item.fecha} </Text>
-          </View>
-
-          <ScrollImg
-            item={item}
-            verModalLista={verModalLista}
-            ratio={ratio}
-            winAncho={win.width}
-          />
-
-          <Text style={{ fontSize: 11, color: '#CDCDCD', marginLeft: 5, marginTop: 5, padding: 5 }}>{item.zona} </Text>
-          {
-            item.frase !== '' &&
-            <Text style={{ fontSize: 13, color: '#fff', marginTop: 5, marginBottom: 10, padding: 15, textAlign: 'justify', }}>{item.frase} </Text>
-          }
-          <View style={{
-            flexDirection: 'row',
-            marginLeft: 10,
-            marginTop: 10,
-            marginBottom: 20
-          }}>
-            {item.like === true || item.idimg === likes ?
-              <Image source={require("../imgs/asbdos.png")} style={{
-                marginLeft: 4,
-                width: 27,
-                height: 26,
-                marginTop: 5
-              }} />
-              :
-              <TouchableOpacity onPress={() => like(item.idimg, item.mes, item.playerid, item.nombre, item.problem, item.fecha)}>
-                <Image source={require("../imgs/asbuno.png")} style={{
-                  marginLeft: 4,
-                  width: 27,
-                  height: 26,
-                  marginTop: 5
-                }} />
-              </TouchableOpacity>
-            }
-            <Text style={{ fontSize: 10, color: '#fff', marginLeft: 0, }}>{item.megusta} </Text>
-            {item.formato === 'foto' ?
-              <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18, }}>Vistas:  <Text style={{ color: '#fff' }}>{item.vistas}</Text></Text>
-              :
-              <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18, }}>Reprod:  <Text style={{ color: '#fff' }}>{item.vistas}</Text></Text>
-            }
-            {
-              sancion.tiempoRestante !== '0' || sancion.veces < '3' &&
-              <TouchableOpacity onPress={() => reportar(item.emailusu, item.codigo)} >
-                <Text style={{
-                  top: -5, fontSize: 8, color: '#9B9B9B', marginLeft: 20, borderRadius: 5,
-                  borderColor: '#808080', borderWidth: 1, marginTop: 10
-                }}>  Reportar </Text>
-              </TouchableOpacity>
-            }
-            <TouchableOpacity onPress={() => compartir(item.imagen, item.imagendos, item.imagentres, item.problem, item.fecha, item.zona, item.frase, item.formato, item.video)}>
-              <Iconsh style={{ marginLeft: 25, marginTop: -3 }} name='share-outline' color="#FCB213" size={37} />
-            </TouchableOpacity>
-
-            {rango === 'adm' ?
-              <TouchableOpacity onPress={() => eliminar(item.idimg, item.playerid)}>
-                <Icon style={{ marginLeft: 20 }} name='delete' color="#FBA000" size={28} />
-              </TouchableOpacity>
-              : item.emailusu === user.email && item.conteolista > 10078 ?
-                <TouchableOpacity onPress={() => eliminar(item.idimg, item.playerid)}>
-                  <Icon style={{ marginLeft: 20 }} name='delete' color="#FF0000" size={28} />
-                </TouchableOpacity>
-                : ''
-            }
-
-          </View>
-          
-        </View>
-        <View >
-          <ModalImg
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-            anchoPantalla={win.width}
-            altoModal={altoModal}
-            ratio2={ratio2}
-            itemImg={itemImg}
-          />
-        </View>
-        <View>
-          <ModalVideo
-            modalVisible2={modalVisible2}
-            setModalVisible2={setModalVisible2}
-            video={video}
-            altoModal={altoModal}
-            anchoPantalla={win.width}
-            ratio2={ratio2}
-            idItem={itemid}
-          />
-        </View>
-        <View>
-          <ModalReporte
-            modalVisible3={modalVisible3}
-            setModalVisible3={setModalVisible3}
-            reporte={reporte}
-          />
-        </View>
-        <View>
-          <ModalSancion
-            modalVisible4={modalVisible4}
-            setModalVisible4={setModalVisible4}
-            borrar={borrar}
-            playId={playId}
-            navigation={navigation}
-          />
-        </View>
-      </ScrollView>
-
-      <AwesomeAlert
-          show={showAlert}
-          showProgress={false}
-          title="Atención"
-          message={titulos}
-          closeOnTouchOutside={true}
-          closeOnHardwareBackPress={false}
-          showCancelButton={true}
-          showConfirmButton={true}
-          cancelText="Cancelar"
-          confirmText=" Eliminar "
-          confirmButtonColor="#064B00"
-          cancelButtonColor="#FF0000"
-          onCancelPressed={() => {
-            cancel();
-          }}
-          onConfirmPressed={() => {
-            quitar();
-          }}
+    <ScrollView>
+      <View>
+        <UserHeader imguser={RUTA_IMG_USER + item.imguser} nombre={item.nombre} fecha={item.fecha} />
+        <ScrollImg item={item} verModalLista={verModalLista} ratio={ratio} winAncho={win.width} />
+        <PostDetails zona={item.zona} frase={item.frase} />
+        <PostActions
+          item={item}
+          likes={likes}
+          like={like}
+          reportar={reportar}
+          compartir={compartir}
+          eliminar={eliminar}
+          sancion={sancion}
+          user={user}
+          rango={rango}
         />
-
-      <ToastServicios dato={toastServ} />
-    </SafeAreaView>
+      </View>
+      <Modals
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        anchoPantalla={win.width}
+        altoModal={altoModal}
+        ratio2={ratio2}
+        itemImg={itemImg}
+        modalVisible2={modalVisible2}
+        setModalVisible2={setModalVisible2}
+        video={video}
+        itemid={itemid}
+        modalVisible3={modalVisible3}
+        setModalVisible3={setModalVisible3}
+        reporte={reporte}
+        modalVisible4={modalVisible4}
+        setModalVisible4={setModalVisible4}
+        borrar={borrar}
+        playId={playId}
+        navigation={navigation}
+      />
+    </ScrollView>
+    <AwesomeAlert
+      show={showAlert}
+      showProgress={false}
+      title="Atención"
+      message={titulos}
+      closeOnTouchOutside={true}
+      closeOnHardwareBackPress={false}
+      showCancelButton={true}
+      showConfirmButton={true}
+      cancelText="Cancelar"
+      confirmText=" Eliminar "
+      confirmButtonColor="#064B00"
+      cancelButtonColor="#FF0000"
+      onCancelPressed={cancel}
+      onConfirmPressed={quitar}
+    />
+    <ToastServicios dato={toastServ} />
+  </SafeAreaView>
   )
 };
 
