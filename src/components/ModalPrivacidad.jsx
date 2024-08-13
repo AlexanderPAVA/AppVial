@@ -9,6 +9,7 @@ import {
     BackHandler,
     Alert
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import OneSignal from 'react-native-onesignal';
 import config from '../config';
@@ -160,7 +161,12 @@ function ModalPrivacidad({ modalVisiblePVez, setModalVisiblePVez }) {
             </View>
         </View>
     )
-}
+};
+
+ModalPrivacidad.propTypes = {
+    modalVisiblePVez: PropTypes.bool.isRequired,
+    setModalVisiblePVez: PropTypes.func.isRequired,
+  };
 
 export default ModalPrivacidad;
 
