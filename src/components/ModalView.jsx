@@ -7,7 +7,7 @@ import {
   Modal,
   TouchableOpacity
 } from 'react-native';
-
+import PropTypes from 'prop-types';
 function ModalView({ modalVisible, setModalVisible, texto }) {
 
   return (
@@ -22,7 +22,7 @@ function ModalView({ modalVisible, setModalVisible, texto }) {
             <Text style={{
               marginTop: 30,
               fontSize: 25,
-              color: '#000',
+              color: '#000000',
               justifyContent: 'center',
               alignSelf: 'center',
               fontWeight: 'bold',
@@ -30,7 +30,7 @@ function ModalView({ modalVisible, setModalVisible, texto }) {
             <Text style={{
               marginTop: 30,
               fontSize: 15,
-              color: '#000',
+              color: '#000000',
               marginLeft: 15,
               marginRight: 17,
               textAlign: 'justify'
@@ -40,7 +40,7 @@ function ModalView({ modalVisible, setModalVisible, texto }) {
           </View>
         </ScrollView>
 
-        <View style={{ backgroundColor: '#000', height: 60 }}>
+        <View style={{ backgroundColor: '#000000', height: 60 }}>
           <TouchableOpacity
             style={styles.buttonDos}
             onPress={() => setModalVisible(false)}
@@ -54,7 +54,13 @@ function ModalView({ modalVisible, setModalVisible, texto }) {
       </Modal>
     </View>
   )
-}
+};
+
+ModalView.propTypes = {
+  modalVisible: PropTypes.bool.isRequired,
+  setModalVisible: PropTypes.func.isRequired,
+  texto: PropTypes.string.isRequired
+};
 
 export default ModalView;
 
@@ -68,7 +74,7 @@ const styles = StyleSheet.create({
 
   buttonDos: {
     position: 'absolute',
-    backgroundColor: '#000',
+    backgroundColor: '#000000',
     bottom: 8,
     right: 20,
     height: 40,
