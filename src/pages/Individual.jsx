@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity
 } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Iconsh from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -27,7 +28,6 @@ import ScrollImg from '../components/ScrollImg';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { CargarListas } from '../components/CargarListas';
 
-
 const RUTA_IMG_USER = config.RUTA_IMG_USER;
 const RUTA_INDIV_UNO = config.RUTA_INDIV_UNO;
 const RUTA_INDIV_TRES = config.RUTA_INDIV_TRES;
@@ -36,9 +36,12 @@ const NO_DELETE_ITEM = config.NO_DELETE_ITEM;
 
 const win = Dimensions.get('window');
 
-function Individual({ route, navigation }) {
+function Individual() {
+
+  const route = useRoute();
+  const navigation = useNavigation();
   
-  const { datoItem, noti } = route.params;
+  const { datoItem } = route.params;
   const { user } = useSelector(state => state.user);
   const { sancion } = useSelector(state => state.sancion);
   const { rango } = sancion;
