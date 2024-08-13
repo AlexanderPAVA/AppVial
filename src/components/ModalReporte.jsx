@@ -6,6 +6,7 @@ import {
     Modal,
     TouchableOpacity
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { Checkbox } from 'react-native-paper';
 import ToastServicios from './ToastServicios';
 import axios from 'axios';
@@ -144,7 +145,13 @@ function ModalReporte({ modalVisible3, setModalVisible3, reporte }) {
             </Modal>
         </View>
     )
-}
+};
+
+ModalReporte.propTypes = {
+    modalVisible3: PropTypes.bool.isRequired,
+    setModalVisible3: PropTypes.func.isRequired,
+    reporte: PropTypes.string.isRequired
+  };
 
 export default ModalReporte;
 
