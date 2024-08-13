@@ -28,7 +28,7 @@ function ListaReporte() {
   };
 
   const { data } = route.params;
-  const [ToastServ, setToastServ] = useState('');
+  const [toastServ, setToastServ] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
   const titulo = () => {
@@ -46,7 +46,7 @@ function ListaReporte() {
     setRefreshing(true);
     axios.get(LISTA_REPORTE)
       .then(function (listas) {
-        setlista(listas.data);
+        setLista(listas.data);
         wait(300).then(() => setRefreshing(false));
       })
       .catch(function (error) {
@@ -70,7 +70,7 @@ function ListaReporte() {
     });
   }, []);
 
-  const [lista, setlista] = useState('');
+  const [lista, setLista] = useState('');
 
   useEffect(() => {
     navigation.setOptions({
@@ -89,7 +89,7 @@ function ListaReporte() {
 
     axios.get(LISTA_REPORTE)
       .then(function (listas) {
-        setlista(listas.data);
+        setLista(listas.data);
       })
       .catch(function (error) {
         setToastServ('sinConexHome');
@@ -117,7 +117,7 @@ function ListaReporte() {
       } else {
         setToastServ('itemBorrado');
         const listaMenos = lista.filter(listado => listado.codigo !== codigo);
-        setlista(listaMenos);
+        setLista(listaMenos);
       };
 
     }).catch(function (error) {
@@ -181,7 +181,7 @@ function ListaReporte() {
           ListEmptyComponent={renderEmptyState} // Use ListEmptyComponent for empty state
         />
       }
-      <ToastServicios dato={ToastServ} />
+      <ToastServicios dato={toastServ} />
     </SafeAreaView>
   )
 };
