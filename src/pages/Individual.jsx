@@ -53,8 +53,8 @@ function Individual({ route, navigation }) {
   const [modalInfo, setModalInfo] = useState({
     itemImg: '',
     itemid: '',
-    altoModal: '',
-    ratio2: '',
+    altoModal: 0,
+    ratio2: 0,
     formato: '',
     video: ''
   });
@@ -134,8 +134,8 @@ const loadLike =(res)=>{
       setModalInfo({
         itemImg: itemImg,
         itemid: itemid,
-        altoModal: alto,
-        ratio2: ratio2,
+        altoModal: parseFloat(alto),
+        ratio2: parseFloat(ratio2),
         formato: formato,
         video: video
       });
@@ -145,8 +145,8 @@ const loadLike =(res)=>{
       setModalInfo({
         itemImg: itemImg,
         itemid: itemid,
-        altoModal: alto,
-        ratio2: ratio2,
+        altoModal: parseFloat(alto),
+        ratio2: parseFloat(ratio2),
         formato: formato,
         video: video
       });
