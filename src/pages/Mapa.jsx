@@ -11,29 +11,33 @@ import Geolocation from 'react-native-geolocation-service';
 import { ActivityIndicator } from 'react-native-paper';
 import ToastServicios from '../components/ToastServicios';
 import config from '../config';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const RUTA_MAPA_UNO = config.RUTA_MAPA_UNO;
 const RUTA_HOME_DOS = config.RUTA_HOME_DOS;
 
-function Mapa({ route, navigation }) {
+function Mapa() {
+
+  const route = useRoute();
+  const navigation = useNavigation();
 
   const { datoGps, pais } = route.params;
   const { user } = useSelector(state => state.user);
   const [position, setPosition] = useState(datoGps);
   const [listaIni, setlistaIni] = useState([]);
-  const [ToastServ, setToastServ] = useState('');
+  const [toastServ, setToastServ] = useState('');
   const [loading, setLoading] = useState(true);
   const [reload, setReload] = useState(false);
   const memoizedMarkers = useMemo(() => listaIni, [listaIni]);
 
   const titulo = () => {
     return (
-      <>
+      <View>
         <Text style={{
           fontSize: 1,
           color: '#000000',
         }}></Text>
-      </>
+      </View>
     )
   };
 
@@ -45,7 +49,7 @@ function Mapa({ route, navigation }) {
       headerTintColor: '#fff',
       headerRight: () => (
         <Text style={{
-          color: 'white',
+          color: '#fff',
           fontSize: 16,
           fontWeight: 'bold',
         }}>Mapa</Text>
@@ -179,7 +183,7 @@ function Mapa({ route, navigation }) {
           }
         </MapView>
       )}
-      <ToastServicios dato={ToastServ} />
+      <ToastServicios dato={toastServ} />
     </View>
   )
 }
