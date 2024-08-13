@@ -33,12 +33,12 @@ function ListaReporte() {
 
   const titulo = () => {
     return (
-      <>
+      <View>
         <Text style={{
           fontSize: 1,
           color: '#260042',
         }}></Text>
-      </>
+      </View>
     )
   };
 
@@ -52,6 +52,22 @@ function ListaReporte() {
       .catch(function (error) {
       });
 
+  }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerStyle: { backgroundColor: '#000' },
+      headerTitle: titulo,
+      headerShown: true,
+      headerTintColor: '#fff',
+      headerRight: () => (
+        <Text Text style={{
+          color: '#FBA000',
+          fontSize: 16,
+          fontWeight: 'bold',
+        }}>Lista Reporte</Text >
+      )
+    });
   }, []);
 
   const [lista, setlista] = useState('');
@@ -168,7 +184,7 @@ function ListaReporte() {
       <ToastServicios dato={ToastServ} />
     </SafeAreaView>
   )
-}
+};
 
 export default ListaReporte;
 
