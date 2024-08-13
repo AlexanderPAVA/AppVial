@@ -25,6 +25,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import config from '../config';
 import { loadsancion } from '../redux/slices/sancion';
 import ModalPrivacidad from '../components/ModalPrivacidad';
+import { useNavigation } from '@react-navigation/native';
 import { notiContext } from '../context/notiContext';
 import { magnetometer, setUpdateIntervalForType, SensorTypes } from "react-native-sensors";
 
@@ -36,8 +37,9 @@ const RUTA_HOME_UNO = config.RUTA_HOME_UNO;
 const RUTA_HOME_DOS = config.RUTA_HOME_DOS;
 const RUTA_HOME_TRES = config.RUTA_HOME_TRES;
 
-function Home({ navigation }) {
+function Home() {
 
+  const navigation = useNavigation();
   setUpdateIntervalForType(SensorTypes.magnetometer, 1200);
 
   const { enterNoti, setEnterNoti, msjNoti, setMsjNoti, itemBorrado } = useContext(notiContext);
