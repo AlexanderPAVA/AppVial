@@ -57,7 +57,7 @@ function ModalImg({ modalVisible, setModalVisible, anchoPantalla, altoModal, rat
 
 ModalImg.propTypes = {
   modalVisible: PropTypes.bool.isRequired,
-  setModalVisible: PropTypes.bool.isRequired,
+  setModalVisible: PropTypes.func.isRequired,
   itemImg: PropTypes.string.isRequired,
   anchoPantalla: PropTypes.number.isRequired,
   altoModal: PropTypes.number.isRequired,
