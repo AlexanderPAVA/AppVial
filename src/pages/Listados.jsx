@@ -429,97 +429,120 @@ function Listados() {
     });
   }, []);
 
-  const renderList = ({ item, index }) => {
-    const ratio = win.width / item.ancho;
-    const datos = listaLike.filter(dato => (dato.idimg === item.idimg));
-    const idimg = datos.length > 0 ? datos[0].idimg : '';
-    return (
-      <View>
-        <View style={{
-          marginTop: 10
-        }}>
-          <FastImage
-            source={{
-              uri: RUTA_IMG_USER + item.imguser,
-              priority: FastImage.priority.normal
-            }}
-            resizeMode={FastImage.resizeMode.stretch}
-            contentContainerStyle={{ padding: 20 }}
-            style={{
-              width: 40,
-              height: 40,
-              marginTop: 10,
-              marginLeft: 10,
-              borderRadius: 25,
-              borderColor: '#FCB213',
-              borderWidth: 1
-            }} />
-          <Text style={{ position: 'absolute', top: '10%', fontSize: 13, color: '#fff', marginLeft: 57, }}>{item.nombre}</Text>
-          <Text style={{ position: 'absolute', top: '60%', fontSize: 10, color: '#CDCDCD', marginLeft: 57, }}>{item.fecha} </Text>
-          <Text style={{ position: 'absolute', top: '60%', right: '3%', fontSize: 11, color: '#FCB213' }}>{item.problem} </Text>
-        </View>
-        <ScrollImg
-          item={item}
-          verModalLista={verModalLista}
-          ratio={ratio}
-          winAncho={win.width}
-        />
-        <Text style={{ fontSize: 11, color: '#CDCDCD', marginLeft: 5, marginTop: 5, padding: 5 }}>{item.zona} </Text>
-        {
-          item.frase !== '' &&
-          <Text style={{ fontSize: 13, color: '#fff', marginTop: 5, marginBottom: 10, padding: 15, textAlign: 'justify', }}>{item.frase} </Text>
-        }
-        <View style={{
-          flexDirection: 'row',
-          marginLeft: 10,
+  const UserHeader = ({ imguser, nombre, fecha, problem }) => (
+    <View style={{ marginTop: 10 }}>
+      <FastImage
+        source={{ uri: imguser, priority: FastImage.priority.normal }}
+        resizeMode={FastImage.resizeMode.stretch}
+        style={{
+          width: 40,
+          height: 40,
           marginTop: 10,
-          marginBottom: 20
-        }}>
-          {item.like === true || idimg === item.idimg ?
-            <Image source={require("../imgs/asbdos.png")} style={{
-              marginLeft: 4,
-              width: 27,
-              height: 26,
-              marginTop: 5
-            }} />
-            :
-            <TouchableOpacity onPress={() => like(item.idimg, item.mes, item.playerid, item.nombre, item.problem, item.fecha)}>
-              <Image source={require("../imgs/asbuno.png")} style={{
-                marginLeft: 4,
-                width: 27,
-                height: 26,
-                marginTop: 5
-              }} />
-            </TouchableOpacity>
-          }
-          <Text style={{ fontSize: 10, color: '#fff', marginLeft: 0, }}>{item.megusta} </Text>
-          {item.formato === 'foto' ?
-            <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18, }}>Vistas:  <Text style={{ color: '#fff' }}>{item.vistas}</Text></Text>
-            :
-            <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18, }}>Reprod:  <Text style={{ color: '#fff' }}>{item.vistas}</Text></Text>
-          }
-          {
-            sancion.tiempoRestante !== '0' || sancion.veces < '3' &&
-            <TouchableOpacity onPress={() => reportar(item.emailusu, item.codigo)} >
-              <Text style={{
-                top: -5, fontSize: 8, color: '#9B9B9B', marginLeft: 20, borderRadius: 5,
-                borderColor: '#808080', borderWidth: 1, marginTop: 10
-              }}>  Reportar </Text>
-            </TouchableOpacity>
-          }
-          <TouchableOpacity onPress={() => compartir(item.imagen, item.imagendos, item.imagentres, item.problem, item.fecha, item.zona, item.frase, item.formato, item.video)}>
-            <Iconsh style={{ marginLeft: 25, marginTop: -3 }} name='share-outline' color="#FCB213" size={37} />
-          </TouchableOpacity>
-          {item.emailusu === user.email && item.conteolista > 10078 ?
-            <TouchableOpacity onPress={() => eliminar(item.idimg)}>
-              <Icon style={{ marginLeft: 20 }} name='delete' color="#FF0000" size={28} />
-            </TouchableOpacity>
-            : ''
-          }
-        </View>
-      </View>
-    )
-  }
+          marginLeft: 10,
+          borderRadius: 25,
+          borderColor: '#FCB213',
+          borderWidth: 1,
+        }}
+      />
+      <Text style={{ position: 'absolute', top: '10%', fontSize: 13, color: '#fff', marginLeft: 57 }}>{nombre}</Text>
+      <Text style={{ position: 'absolute', top: '60%', fontSize: 10, color: '#CDCDCD', marginLeft: 57 }}>{fecha}</Text>
+      <Text style={{ position: 'absolute', top: '60%', right: '3%', fontSize: 11, color: '#FCB213' }}>{problem}</Text>
+    </View>
+  );
+  
+  const PostContent = ({ item, verModalLista, ratio, winAncho }) => (
+    <>
+      <ScrollImg item={item} verModalLista={verModalLista} ratio={ratio} winAncho={winAncho} />
+      <Text style={{ fontSize: 11, color: '#CDCDCD', marginLeft: 5, marginTop: 5, padding: 5 }}>{item.zona}</Text>
+      {item.frase !== '' && (
+        <Text style={{ fontSize: 13, color: '#fff', marginTop: 5, marginBottom: 10, padding: 15, textAlign: 'justify' }}>
+          {item.frase}
+        </Text>
+      )}
+    </>
+  );
+  
+  const InteractionButtons = ({ item, idimg, like, reportar, compartir, eliminar, sancion, user }) => (
+    <View style={{ flexDirection: 'row', marginLeft: 10, marginTop: 10, marginBottom: 20 }}>
+      {item.like || idimg === item.idimg ? (
+        <Image source={require("../imgs/asbdos.png")} style={{ marginLeft: 4, width: 27, height: 26, marginTop: 5 }} />
+      ) : (
+        <TouchableOpacity onPress={() => like(item.idimg, item.mes, item.playerid, item.nombre, item.problem, item.fecha)}>
+          <Image source={require("../imgs/asbuno.png")} style={{ marginLeft: 4, width: 27, height: 26, marginTop: 5 }} />
+        </TouchableOpacity>
+      )}
+      <Text style={{ fontSize: 10, color: '#fff', marginLeft: 0 }}>{item.megusta}</Text>
+      <Text style={{ fontSize: 10, color: '#9B9B9B', marginLeft: 18 }}>
+        {item.formato === 'foto' ? 'Vistas:' : 'Reprod:'} <Text style={{ color: '#fff' }}>{item.vistas}</Text>
+      </Text>
+      {(sancion.tiempoRestante !== '0' || sancion.veces < '3') && (
+        <TouchableOpacity onPress={() => reportar(item.emailusu, item.codigo)}>
+          <Text
+            style={{
+              top: -5,
+              fontSize: 8,
+              color: '#9B9B9B',
+              marginLeft: 20,
+              borderRadius: 5,
+              borderColor: '#808080',
+              borderWidth: 1,
+              marginTop: 10,
+            }}
+          >
+            Reportar
+          </Text>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity onPress={() => compartir(item.imagen, item.imagendos, item.imagentres, item.problem, item.fecha, item.zona, item.frase, item.formato, item.video)}>
+        <Iconsh style={{ marginLeft: 25, marginTop: -3 }} name='share-outline' color="#FCB213" size={37} />
+      </TouchableOpacity>
+      {item.emailusu === user.email && item.conteolista > 10078 && (
+        <TouchableOpacity onPress={() => eliminar(item.idimg)}>
+          <Icon style={{ marginLeft: 20 }} name='delete' color="#FF0000" size={28} />
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+
+  const PostCard = ({ item, idimg, like, reportar, compartir, eliminar, verModalLista, ratio, winAncho, sancion, user }) => (
+    <View>
+      <UserHeader imguser={RUTA_IMG_USER + item.imguser} nombre={item.nombre} fecha={item.fecha} problem={item.problem} />
+      <PostContent item={item} verModalLista={verModalLista} ratio={ratio} winAncho={winAncho} />
+      <InteractionButtons
+        item={item}
+        idimg={idimg}
+        like={like}
+        reportar={reportar}
+        compartir={compartir}
+        eliminar={eliminar}
+        sancion={sancion}
+        user={user}
+      />
+    </View>
+  );
+  
+  const renderList = ({ item }) => {
+    const ratio = win.width / item.ancho;
+    const datos = listaLike.filter(dato => dato.idimg === item.idimg);
+    const idimg = datos.length > 0 ? datos[0].idimg : '';
+  
+    return (
+      <PostCard
+        item={item}
+        idimg={idimg}
+        like={like}
+        reportar={reportar}
+        compartir={compartir}
+        eliminar={eliminar}
+        verModalLista={verModalLista}
+        ratio={ratio}
+        winAncho={win.width}
+        sancion={sancion}
+        user={user}
+      />
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {lista.length !== 0 ?
