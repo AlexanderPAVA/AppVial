@@ -256,291 +256,154 @@ function Home() {
     }
   };
 
+
+  const handleNavigation = (route, params = {}) => {
+    setMsjNoti('');
+    setMsjCam('');
+    setTimeout(() => setBloqueoButtons(false), 1000);
+    navigation.navigate(route, params);
+  };
+
+  const handleItemBorrado = () => {
+    setMsjNoti('');
+    setMsjCam('');
+    setBloqueoButtons(false);
+    setToastServ('itemBorrado');
+    setSNT(prevSNT => !prevSNT);
+  };
+
+  const handleColombiaFallback = () => {
+    const locationdpto2 = 'Colombia';
+    dispatch(loadReten(locationdpto2));
+    OneSignal.sendTag("key", "");
+    setBloqueoButtons(false);
+
+    setTimeout(() => {
+      if (enterNoti !== 0) {
+        handleNavigation('Individual', { datoItem: enterNoti });
+      } else {
+        setToastServ(pais === 'Colombia' ? 'sinDpto' : 'sinDpto2');
+      }
+    }, 1200);
+  };
+
   const gpsDpto = (locationdpto, resultdos, resultres, resultcuatro, paisActual) => {
+    
+    const departamentosColombia = [
+      "Amazonas", "Antioquia", "Arauca", "Atlántico", "Bolívar", "Boyacá", "Caldas", "Caquetá", "Casanare",
+      "Cauca", "Cesar", "Chocó", "Córdoba", "Cundinamarca", "Guainía", "Guaviare", "Huila", "La Guajira",
+      "Magdalena", "Meta", "Nariño", "Norte de Santander", "Putumayo", "Quindío", "Risaralda",
+      "San Andrés y Providencia", "Santander", "Sucre", "Tolima", "Valle del Cauca", "Vaupés", "Vichada", "Bogotá"
+    ];
+
     if (locationdpto !== undefined && paisActual === 'Colombia') {
-      if (locationdpto === "Amazonas" || locationdpto === "Antioquia" || locationdpto === "Arauca" || locationdpto === "Atlántico" || locationdpto === "Bolívar" || locationdpto === "Boyacá" || locationdpto === "Caldas" || locationdpto === "Caquetá" || locationdpto === "Casanare" || locationdpto === "Cauca" || locationdpto === "Cesar" || locationdpto === "Chocó" || locationdpto === "Córdoba" || locationdpto === "Cundinamarca" || locationdpto === "Guainía" || locationdpto === "Guaviare" || locationdpto === "Huila" || locationdpto === "La Guajira" || locationdpto === "Magdalena" || locationdpto === "Meta" || locationdpto === "Nariño" || locationdpto === "Norte de Santander" || locationdpto === "Putumayo" || locationdpto === "Quindío" || locationdpto === "Risaralda" || locationdpto === "San Andrés y Providencia" || locationdpto === "Santander" || locationdpto === "Sucre" || locationdpto === "Tolima" || locationdpto === "Valle del Cauca" || locationdpto === "Vaupés" || locationdpto === "Vichada" || locationdpto === 'Bogotá') {
-        if (locationdpto === 'Bogotá') {
-          OneSignal.sendTag("key", "Cundinamarca");
-          dispatch(loadReten("Cundinamarca"));
-        } else {
-          OneSignal.sendTag("key", locationdpto);
-          dispatch(loadReten(locationdpto));
-        }
+
+      if (departamentosColombia.includes(locationdpto)) {
+        const departamentoKey = locationdpto === 'Bogotá' ? 'Cundinamarca' : locationdpto;
+        OneSignal.sendTag("key", departamentoKey);
+        dispatch(loadReten(departamentoKey));
+        setMsjCam('');
         if (itemBorrado === 0) {
-          if (camara === true) {
-            navigation.navigate('Camara', {
-              datoGps: positionIni,
-              brujula: compassAccuracy,
-              pais: pais
-            });
-            setMsjNoti('');
-            setMsjCam('');
-            setTimeout(() => {
-              setBloqueoButtons(false);
-            }, 1000);
-          } else if (camara === false) {
-            setMsjCam('');
+          if (camara) {
+            handleNavigation('Camara', { datoGps: positionIni, brujula: compassAccuracy, pais });
+          } else {
             if (!user) {
               setBloqueoButtons(false);
               navigation.navigate('LoginUser');
+            } else if (enterNoti !== 0) {
+              handleNavigation('Individual', { datoItem: enterNoti });
             } else {
-              if (enterNoti !== 0) {
-                setMsjNoti('');
-                navigation.navigate('Individual', {
-                  datoItem: enterNoti
-                });
-                setTimeout(() => {
-                  setBloqueoButtons(false);
-                }, 1000);
-              } else {
-                setBloqueoButtons(false);
-              }
+              setBloqueoButtons(false);
             }
           }
         } else {
-          setMsjNoti('');
-          setMsjCam('');
-          setBloqueoButtons(false);
-          if (SNT === false) {
-            setToastServ('itemBorrado');
-            setSNT(true);
-          } else {
-            setToastServ('itemBorrado');
-            setSNT(false);
-          }
+          handleItemBorrado();
         }
       } else {
-        const locationdpto2 = 'Colombia';
-        dispatch(loadReten(locationdpto2));
-        OneSignal.sendTag("key", "");
-        setBloqueoButtons(false);
-        setTimeout(() => {
-          if (enterNoti !== 0) {
-            setMsjNoti('')
-            navigation.navigate('Individual', {
-              datoItem: enterNoti
-            })
-
-          } else if (locationdpto2 === 'Colombia' || pais === 'Colombia') {
-            setToastServ('sinDpto');
-          } else {
-            setToastServ('sinDpto2');
-          }
-        }, 1200);
+        handleColombiaFallback();
       }
-    } else if (resultdos !== undefined && paisActual === 'Colombia') {
-      if (resultdos === "Amazonas" || resultdos === "Antioquia" || resultdos === "Arauca" || resultdos === "Atlántico" || resultdos === "Bolívar" || resultdos === "Boyacá" || resultdos === "Caldas" || resultdos === "Caquetá" || resultdos === "Casanare" || resultdos === "Cauca" || resultdos === "Cesar" || resultdos === "Chocó" || resultdos === "Córdoba" || resultdos === "Cundinamarca" || resultdos === "Guainía" || resultdos === "Guaviare" || resultdos === "Huila" || resultdos === "La Guajira" || resultdos === "Magdalena" || resultdos === "Meta" || resultdos === "Nariño" || resultdos === "Norte de Santander" || resultdos === "Putumayo" || resultdos === "Quindío" || resultdos === "Risaralda" || resultdos === "San Andrés y Providencia" || resultdos === "Santander" || resultdos === "Sucre" || resultdos === "Tolima" || resultdos === "Valle del Cauca" || resultdos === "Vaupés" || resultdos === "Vichada" || resultdos === 'Bogotá') {
-        if (resultdos === 'Bogotá') {
-          OneSignal.sendTag("key", "Cundinamarca");
-          dispatch(loadReten("Cundinamarca"));
-        } else {
-          OneSignal.sendTag("key", locationdpto);
-          dispatch(loadReten(locationdpto));
-        }
+      
+    }else if (resultdos !== undefined && paisActual === 'Colombia') {
+
+      if (departamentosColombia.includes(resultdos)) {
+        const departamentoKey = resultdos === 'Bogotá' ? 'Cundinamarca' : resultdos;
+        OneSignal.sendTag("key", departamentoKey);
+        dispatch(loadReten(departamentoKey));
+        setMsjCam('');
         if (itemBorrado === 0) {
-          if (camara === true) {
-            navigation.navigate('Camara', {
-              datoGps: positionIni,
-              brujula: compassAccuracy,
-              pais: pais
-            });
-            setMsjNoti('');
-            setMsjCam('');
-            setTimeout(() => {
-              setBloqueoButtons(false);
-            }, 1000);
-          } else if (camara === false) {
-            setMsjCam('');
+          if (camara) {
+            handleNavigation('Camara', { datoGps: positionIni, brujula: compassAccuracy, pais });
+          } else {
             if (!user) {
               setBloqueoButtons(false);
               navigation.navigate('LoginUser');
+            } else if (enterNoti !== 0) {
+              handleNavigation('Individual', { datoItem: enterNoti });
             } else {
-              if (enterNoti !== 0) {
-                setMsjNoti('');
-                navigation.navigate('Individual', {
-                  datoItem: enterNoti
-                });
-                setTimeout(() => {
-                  setBloqueoButtons(false);
-                }, 1000);
-              } else {
-                setBloqueoButtons(false);
-              }
+              setBloqueoButtons(false);
             }
           }
         } else {
-          setMsjNoti('');
-          setMsjCam('');
-          setBloqueoButtons(false);
-          if (SNT === false) {
-            setToastServ('itemBorrado');
-            setSNT(true);
-          } else {
-            setToastServ('itemBorrado');
-            setSNT(false);
-          }
+          handleItemBorrado();
         }
       } else {
-        const locationdpto2 = 'Colombia';
-        dispatch(loadReten(locationdpto2));
-        OneSignal.sendTag("key", "");
-        setBloqueoButtons(false);
-        setTimeout(() => {
-          if (enterNoti !== 0) {
-            setMsjNoti('')
-            navigation.navigate('Individual', {
-              datoItem: enterNoti
-            })
-
-          } else if (locationdpto2 === 'Colombia' || pais === 'Colombia') {
-            setToastServ('sinDpto');
-          } else {
-            setToastServ('sinDpto2');
-          }
-        }, 1200);
+        handleColombiaFallback();
       }
+
     } else if (resultres !== undefined && paisActual === 'Colombia') {
-      if (resultres === "Amazonas" || resultres === "Antioquia" || resultres === "Arauca" || resultres === "Atlántico" || resultres === "Bolívar" || resultres === "Boyacá" || resultres === "Caldas" || resultres === "Caquetá" || resultres === "Casanare" || resultres === "Cauca" || resultres === "Cesar" || resultres === "Chocó" || resultres === "Córdoba" || resultres === "Cundinamarca" || resultres === "Guainía" || resultres === "Guaviare" || resultres === "Huila" || resultres === "La Guajira" || resultres === "Magdalena" || resultres === "Meta" || resultres === "Nariño" || resultres === "Norte de Santander" || resultres === "Putumayo" || resultres === "Quindío" || resultres === "Risaralda" || resultres === "San Andrés y Providencia" || resultres === "Santander" || resultres === "Sucre" || resultres === "Tolima" || resultres === "Valle del Cauca" || resultres === "Vaupés" || resultres === "Vichada" || resultres === "Bogotá") {
-        if (resultres === 'Bogotá') {
-          OneSignal.sendTag("key", "Cundinamarca");
-          dispatch(loadReten("Cundinamarca"));
-        } else {
-          OneSignal.sendTag("key", resultres);
-          dispatch(loadReten(resultres));
-        }
+
+      if (departamentosColombia.includes(resultres)) {
+        const departamentoKey = resultres === 'Bogotá' ? 'Cundinamarca' : resultres;
+        OneSignal.sendTag("key", departamentoKey);
+        dispatch(loadReten(departamentoKey));
+        setMsjCam('');
         if (itemBorrado === 0) {
-          if (camara === true) {
-            navigation.navigate('Camara', {
-              datoGps: positionIni,
-              brujula: compassAccuracy,
-              pais: pais
-            });
-            setMsjNoti('');
-            setMsjCam('');
-            setTimeout(() => {
-              setBloqueoButtons(false);
-            }, 1000);
-          } else if (camara === false) {
-            setMsjCam('');
+          if (camara) {
+            handleNavigation('Camara', { datoGps: positionIni, brujula: compassAccuracy, pais });
+          } else {
             if (!user) {
               setBloqueoButtons(false);
               navigation.navigate('LoginUser');
+            } else if (enterNoti !== 0) {
+              handleNavigation('Individual', { datoItem: enterNoti });
             } else {
-              if (enterNoti !== 0) {
-                setMsjNoti('');
-                navigation.navigate('Individual', {
-                  datoItem: enterNoti
-                });
-                setTimeout(() => {
-                  setBloqueoButtons(false);
-                }, 1000);
-              } else {
-                setBloqueoButtons(false);
-              }
+              setBloqueoButtons(false);
             }
           }
         } else {
-          setMsjNoti('');
-          setMsjCam('');
-          setBloqueoButtons(false);
-          if (SNT === false) {
-            setToastServ('itemBorrado');
-            setSNT(true);
-          } else {
-            setToastServ('itemBorrado');
-            setSNT(false);
-          }
+          handleItemBorrado();
         }
       } else {
-        const locationdpto2 = 'Colombia';
-        dispatch(loadReten(locationdpto2));
-        OneSignal.sendTag("key", "");
-        setBloqueoButtons(false);
-        setTimeout(() => {
-          if (enterNoti !== 0) {
-            setMsjNoti('')
-            navigation.navigate('Individual', {
-              datoItem: enterNoti
-            })
-
-          } else if (locationdpto2 === 'Colombia' || pais === 'Colombia') {
-            setToastServ('sinDpto');
-          } else {
-            setToastServ('sinDpto2');
-          }
-        }, 1200);
+        handleColombiaFallback();
       }
+
     } else if (resultcuatro !== undefined && paisActual === 'Colombia') {
-      if (resultcuatro === "Amazonas" || resultcuatro === "Antioquia" || resultcuatro === "Arauca" || resultcuatro === "Atlántico" || resultcuatro === "Bolívar" || resultcuatro === "Boyacá" || resultcuatro === "Caldas" || resultcuatro === "Caquetá" || resultcuatro === "Casanare" || resultcuatro === "Cauca" || resultcuatro === "Cesar" || resultcuatro === "Chocó" || resultcuatro === "Córdoba" || resultcuatro === "Cundinamarca" || resultcuatro === "Guainía" || resultcuatro === "Guaviare" || resultcuatro === "Huila" || resultcuatro === "La Guajira" || resultcuatro === "Magdalena" || resultcuatro === "Meta" || resultcuatro === "Nariño" || resultcuatro === "Norte de Santander" || resultcuatro === "Putumayo" || resultcuatro === "Quindío" || resultcuatro === "Risaralda" || resultcuatro === "San Andrés y Providencia" || resultcuatro === "Santander" || resultcuatro === "Sucre" || resultcuatro === "Tolima" || resultcuatro === "Valle del Cauca" || resultcuatro === "Vaupés" || resultcuatro === "Vichada" || resultcuatro === "Bogotá") {
-        if (resultcuatro === 'Bogotá') {
-          OneSignal.sendTag("key", "Cundinamarca");
-          dispatch(loadReten("Cundinamarca"));
-        } else {
-          OneSignal.sendTag("key", resultcuatro);
-          dispatch(loadReten(resultcuatro));
-        }
+
+      if (departamentosColombia.includes(resultcuatro)) {
+        const departamentoKey = resultcuatro === 'Bogotá' ? 'Cundinamarca' : resultcuatro;
+        OneSignal.sendTag("key", departamentoKey);
+        dispatch(loadReten(departamentoKey));
+        setMsjCam('');
         if (itemBorrado === 0) {
-          if (camara === true) {
-            navigation.navigate('Camara', {
-              datoGps: positionIni,
-              brujula: compassAccuracy,
-              pais: pais
-            });
-            setMsjNoti('');
-            setMsjCam('');
-            setTimeout(() => {
-              setBloqueoButtons(false);
-            }, 1000);
-          } else if (camara === false) {
-            setMsjCam('');
+          if (camara) {
+            handleNavigation('Camara', { datoGps: positionIni, brujula: compassAccuracy, pais });
+          } else {
             if (!user) {
               setBloqueoButtons(false);
               navigation.navigate('LoginUser');
+            } else if (enterNoti !== 0) {
+              handleNavigation('Individual', { datoItem: enterNoti });
             } else {
-              if (enterNoti !== 0) {
-                setMsjNoti('');
-                navigation.navigate('Individual', {
-                  datoItem: enterNoti
-                });
-                setTimeout(() => {
-                  setBloqueoButtons(false);
-                }, 1000);
-              } else {
-                setBloqueoButtons(false);
-              }
+              setBloqueoButtons(false);
             }
           }
         } else {
-          setMsjNoti('');
-          setMsjCam('');
-          setBloqueoButtons(false);
-          if (SNT === false) {
-            setToastServ('itemBorrado');
-            setSNT(true);
-          } else {
-            setToastServ('itemBorrado');
-            setSNT(false);
-          }
+          handleItemBorrado();
         }
       } else {
-        const locationdpto2 = 'Colombia';
-        dispatch(loadReten(locationdpto2));
-        OneSignal.sendTag("key", "");
-        setBloqueoButtons(false);
-        setTimeout(() => {
-          if (enterNoti !== 0) {
-            setMsjNoti('')
-            navigation.navigate('Individual', {
-              datoItem: enterNoti
-            })
-
-          } else if (locationdpto2 === 'Colombia' || pais === 'Colombia') {
-            setToastServ('sinDpto');
-          } else {
-            setToastServ('sinDpto2');
-          }
-        }, 1200);
+        handleColombiaFallback();
       }
+ 
 
     } else {
       const locationdpto2 = 'Colombia';
@@ -690,7 +553,7 @@ function Home() {
   );
 
   const MostrarReten = ({ reten, conex, bloqueoButtons, color, compassAccuracy }) => (
-    <>
+    <View>
       <Text style={styles.depto}>{reten}</Text>
       <GpsPrecision
         conex={conex}
@@ -699,7 +562,7 @@ function Home() {
         color={color}
         compassAccuracy={compassAccuracy}
       />
-    </>
+    </View>
   );
 
   const UbicacionSinDepartamento = () => (
