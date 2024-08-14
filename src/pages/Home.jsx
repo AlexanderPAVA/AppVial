@@ -64,8 +64,6 @@ function Home() {
   const [pais, setPais] = useState('');
   const [mostrarsinpais, setmostrarsinpais] = useState(0);
 
-  //console.log(positionIni)
-
   useEffect(() => {
     navigation.setOptions({
       headerStyle: { backgroundColor: '#000' },
@@ -178,17 +176,44 @@ function Home() {
                 latitudeDelta: 0.12,
                 longitudeDelta: 0.12,
               });
-              const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=8.638451, -72.720211&key=${MAPA_KEY}`;
+              const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${crd.latitude},${crd.longitude}&key=${MAPA_KEY}`;
               fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
-
                   const result = data.results[0];
-                  const resultDos = data.results[1];
-                  const resultTres = data.results[2];
+                  function getAddressComponent() {
+                    for (let i = 0; i < result.address_components.length; i++) {
+                      let component = result.address_components[i];
+                      if (component.types.includes('administrative_area_level_1')) {
+                        return component.long_name;
+                      }
+                    }
+                  };
+                  function getAddressComponent2() {
+                    for (let i = 0; i < result.address_components.length; i++) {
+                      let component = result.address_components[i];
+                      if (component.types.includes('country')) {
+                        return component.long_name;
+                      }
+                    }
+                  };
+                  setPais(getAddressComponent2());
+                  const paisActual = getAddressComponent2();
+                  const locationdpto = getAddressComponent();
+                  const resultdos = data.results[2]?.address_components[2]?.short_name;
+                  const resultres = data.results[2]?.address_components[3]?.short_name;
+                  const resultcuatro = data.results[2]?.address_components[4]?.short_name;
+                  gpsDpto(locationdpto, resultdos, resultres, resultcuatro, paisActual);
 
-              LoadPais(result, resultDos, resultTres);
-
+                  if (getAddressComponent2() === 'Colombia') {
+                    setBloqueoButtons(false);
+                  } else if (getAddressComponent2() === '' || getAddressComponent2() === undefined || getAddressComponent2() === null) {
+                    setTimeout(() => {
+                      setmostrarsinpais(1);
+                      setToastServ('sinDpto1');
+                    }, 1500);
+                    setMsjCam('');
+                  }
                 });
             }, (error) => {
               setToastServ('sinGpsHome');
@@ -257,96 +282,21 @@ function Home() {
       if (enterNoti !== 0) {
         handleNavigation('Individual', { datoItem: enterNoti });
       } else {
-        setToastServ(
-          pais === 'Colombia' ?
-            'sinDpto'
-            :
-            'sinDpto2');
+        setToastServ(pais === 'Colombia' ? 'sinDpto' : 'sinDpto2');
       }
     }, 1200);
   };
 
-  const LoadPais =(result, resultDos, resultTres)=>{
-
-    function getAddressComponent(result, type) {
-      for (let i = 0; i < result.address_components.length; i++) {
-        let component = result.address_components[i];
-        if (component.types.includes(type)) {
-          return component.long_name;
-        }
-      }
-      return null; // Retorna null si no se encuentra el componente
-    }
+  const gpsDpto = (locationdpto, resultdos, resultres, resultcuatro, paisActual) => {
     
-    // Obtener los componentes para el primer resultado
-    const paisActual = getAddressComponent(result, 'country');
-    const locationdpto = getAddressComponent(result, 'administrative_area_level_1');
-    
-    // Obtener los componentes para el segundo resultado
-    const paisActualDos = getAddressComponent(resultDos, 'country');
-    const locationdptoDos = getAddressComponent(resultDos, 'administrative_area_level_1');
-    
-    // Obtener los componentes para el tercer resultado
-    const paisActualTres = getAddressComponent(resultTres, 'country');
-    const locationdptoTres = getAddressComponent(resultTres, 'administrative_area_level_1');
-    
-  
-      console.log('Dpto:  ' + locationdpto, locationdptoDos, locationdptoTres);
-  
-      if (paisActual !== undefined && paisActual !== null) {
-        console.log('Entra 1');
-        setPais(paisActual);
-        gpsDpto(locationdpto, locationdptoDos, locationdptoTres, paisActual);
-        if (paisActual === 'Colombia') {
-          setBloqueoButtons(false);
-        } else if (paisActual === '' || paisActual === undefined || paisActual === null) {
-          setTimeout(() => {
-            setmostrarsinpais(1);
-            setToastServ('sinDpto1');
-          }, 1500);
-          setMsjCam('');
-        }
-      } else if (paisActualDos !== undefined && paisActualDos !== null) {
-        console.log('Entra 2');
-        setPais(paisActualDos);
-        gpsDpto(locationdptoDos, locationdpto, locationdptoTres, paisActualDos);
-        if (paisActualDos === 'Colombia') {
-          setBloqueoButtons(false);
-        } else if (paisActualDos === '' || paisActualDos === undefined || paisActualDos === null) {
-          setTimeout(() => {
-            setmostrarsinpais(1);
-            setToastServ('sinDpto1');
-          }, 1500);
-          setMsjCam('');
-        }
-      } else {
-        console.log('Entra 3');
-        setPais(paisActualTres);
-        gpsDpto(locationdptoTres, locationdpto, locationdptoDos, paisActualTres);
-        if (paisActualTres === 'Colombia') {
-          setBloqueoButtons(false);
-        } else if (paisActualTres === '' || paisActualTres === undefined || paisActualTres === null) {
-          setTimeout(() => {
-            setmostrarsinpais(1);
-            setToastServ('sinDpto1');
-          }, 1500);
-          setMsjCam('');
-        }
-      };
-  };
-
-  const gpsDpto = (locationdpto, locationdptoDos, locationdptoTres, paisActual) => {
-
-    console.log(locationdpto, locationdptoDos, locationdptoTres, paisActual)
-
     const departamentosColombia = [
       "Amazonas", "Antioquia", "Arauca", "Atlántico", "Bolívar", "Boyacá", "Caldas", "Caquetá", "Casanare",
       "Cauca", "Cesar", "Chocó", "Córdoba", "Cundinamarca", "Guainía", "Guaviare", "Huila", "La Guajira",
-      "Magdalena", "Meta", "Narino", "Norte de Santander", "Putumayo", "Quindío", "Risaralda",
+      "Magdalena", "Meta", "Nariño", "Norte de Santander", "Putumayo", "Quindío", "Risaralda",
       "San Andrés y Providencia", "Santander", "Sucre", "Tolima", "Valle del Cauca", "Vaupés", "Vichada", "Bogotá"
     ];
 
-    if (locationdpto !== undefined && locationdpto !== null && paisActual === 'Colombia') {
+    if (locationdpto !== undefined && paisActual === 'Colombia') {
 
       if (departamentosColombia.includes(locationdpto)) {
         const departamentoKey = locationdpto === 'Bogotá' ? 'Cundinamarca' : locationdpto;
@@ -372,11 +322,11 @@ function Home() {
       } else {
         handleColombiaFallback();
       }
+      
+    }else if (resultdos !== undefined && paisActual === 'Colombia') {
 
-    } else if (locationdptoDos !== undefined && locationdptoDos !== null && paisActual === 'Colombia') {
-
-      if (departamentosColombia.includes(locationdptoDos)) {
-        const departamentoKey = locationdptoDos === 'Bogotá' ? 'Cundinamarca' : locationdptoDos;
+      if (departamentosColombia.includes(resultdos)) {
+        const departamentoKey = resultdos === 'Bogotá' ? 'Cundinamarca' : resultdos;
         OneSignal.sendTag("key", departamentoKey);
         dispatch(loadReten(departamentoKey));
         setMsjCam('');
@@ -400,10 +350,10 @@ function Home() {
         handleColombiaFallback();
       }
 
-    } else if (locationdptoTres !== undefined && locationdptoTres !== null && paisActual === 'Colombia') {
+    } else if (resultres !== undefined && paisActual === 'Colombia') {
 
-      if (departamentosColombia.includes(locationdptoTres)) {
-        const departamentoKey = locationdptoTres === 'Bogotá' ? 'Cundinamarca' : locationdptoTres;
+      if (departamentosColombia.includes(resultres)) {
+        const departamentoKey = resultres === 'Bogotá' ? 'Cundinamarca' : resultres;
         OneSignal.sendTag("key", departamentoKey);
         dispatch(loadReten(departamentoKey));
         setMsjCam('');
@@ -426,6 +376,34 @@ function Home() {
       } else {
         handleColombiaFallback();
       }
+
+    } else if (resultcuatro !== undefined && paisActual === 'Colombia') {
+
+      if (departamentosColombia.includes(resultcuatro)) {
+        const departamentoKey = resultcuatro === 'Bogotá' ? 'Cundinamarca' : resultcuatro;
+        OneSignal.sendTag("key", departamentoKey);
+        dispatch(loadReten(departamentoKey));
+        setMsjCam('');
+        if (itemBorrado === 0) {
+          if (camara) {
+            handleNavigation('Camara', { datoGps: positionIni, brujula: compassAccuracy, pais });
+          } else {
+            if (!user) {
+              setBloqueoButtons(false);
+              navigation.navigate('LoginUser');
+            } else if (enterNoti !== 0) {
+              handleNavigation('Individual', { datoItem: enterNoti });
+            } else {
+              setBloqueoButtons(false);
+            }
+          }
+        } else {
+          handleItemBorrado();
+        }
+      } else {
+        handleColombiaFallback();
+      }
+ 
 
     } else {
       const locationdpto2 = 'Colombia';
@@ -595,7 +573,7 @@ function Home() {
 
   const UbicacionSinInformacionPais = () => (
     <Text style={styles.sindepto2}>
-      Sin información de ubicación
+      Sin información del país
     </Text>
   );
 
